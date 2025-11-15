@@ -165,19 +165,8 @@ open_github.open({tbl_or_str})                            *open_github.open()*
 ウェブページをダウンロードしてneovimで閲覧する
 `curl` が必要
 
-open_webpage.access({str})                             *open_webpage.access()*
-    ウェブページを閲覧する
-    https://example.com を閲覧するには
->lua
-        open_webpage.access("example.com")
-<
-
-    引数: ~
-      • {str}  (`string`) URLの"https?://"を除いた部分
-
 open_webpage.open({str})                                 *open_webpage.open()*
     ウェブページを閲覧する
-    |open_webpage.access()| のラッパー
     パスを元にファイルタイプをセットする
     https://example.com を閲覧するには
 >lua

@@ -25,10 +25,9 @@ lua-lib-tbl	lua-modules.jax	/*lua-lib-tbl*
 lua-modules	lua-modules.jax	/*lua-modules*
 lua-modules-intro	lua-modules.jax	/*lua-modules-intro*
 lua-modules.jax	lua-modules.jax	/*lua-modules.jax*
-open_github.get_url.tbl()	lua-modules.jax	/*open_github.get_url.tbl()*
-open_github.get_url.url()	lua-modules.jax	/*open_github.get_url.url()*
+open_github.get_from_string()	lua-modules.jax	/*open_github.get_from_string()*
+open_github.get_from_table()	lua-modules.jax	/*open_github.get_from_table()*
 open_github.open()	lua-modules.jax	/*open_github.open()*
-open_webpage.access()	lua-modules.jax	/*open_webpage.access()*
 open_webpage.open()	lua-modules.jax	/*open_webpage.open()*
 package_manager.directory()	lua-modules.jax	/*package_manager.directory()*
 package_manager.directory().available_packages	lua-modules.jax	/*package_manager.directory().available_packages*
