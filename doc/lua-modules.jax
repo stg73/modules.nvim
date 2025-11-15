@@ -118,7 +118,7 @@ open_github.get_from_table({tbl})               *open_github.get_from_table()*
     返り値: ~
         (`string`) |open_webpage.open()| に渡す文字列
 
-open_github.get_url.str({str})                 *open_github.get_from_string()*
+open_github.get_from_string(({str})            *open_github.get_from_string()*
     {str} のBNF
 >
         <str> ::= <repo> "\" <commit> path | <repo> path
