@@ -176,6 +176,9 @@ open_webpage.open({str})                                 *open_webpage.open()*
     引数: ~
       • {str}  (`string`) URLの"https?://"を除いた部分
 
+    返り値: ~
+        (`table`) `vim.system():wait()` と同じ
+
 ==============================================================================
 パッケージマネージャー                               *lua-lib-package_manager*
 
