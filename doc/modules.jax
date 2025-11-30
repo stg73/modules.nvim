@@ -1,11 +1,11 @@
-*lua-modules.jax*                                                *lua-modules*
+*modules.jax*                                                        *modules*
 
-                               lua-modules docs
+                                 modules docs
 
                                        Type |gO| to see the table of contents.
 
 ==============================================================================
-導入                                                       *lua-modules-intro*
+導入                                                           *modules-intro*
 
 neovim用のluaモジュール群
 |get_keymap.get()| 以外の全ての関数はカリー化されている
@@ -103,7 +103,7 @@ open_github.get_from_table({tbl})               *open_github.get_from_table()*
     例:
 >lua
         open_github.get_from_table({
-            repo = "stg73/lua-modules",
+            repo = "stg73/modules.nvim",
             commit = "main",
             file = "readme.txt"
         })
@@ -134,8 +134,8 @@ open_github.get_from_string(({str})            *open_github.get_from_string()*
         "neovim/neovim/README.md"
 <
 >lua
-        open_github.get_from_string("stg73/lua-modules/\\bmain/readme.txt")
-        -- "github.com/stg73/lua-modules/raw/refs/heads/main/readme.txt"
+        open_github.get_from_string("stg73/modules.nvim/\\bmain/readme.txt")
+        -- "github.com/stg73/modules.nvim/raw/refs/heads/main/readme.txt"
 <
 
     引数: ~
@@ -151,7 +151,7 @@ open_github.open({tbl_or_str})                            *open_github.open()*
     成功すると `b:github` にgithubのウェブUIで見る用のURLを代入する
 >lua
         -- このhelpを見る
-        open_github.open("stg73/lua-modules/doc/lua-modules.jax")
+        open_github.open("stg73/modules.nvim/doc/modules.jax")
         -- webuiで見る
         vim.ui.open("https://" .. vim.b.github)
 <
@@ -253,7 +253,7 @@ install_table({pkgs})            *package_manager.directory().install_table()*
 >lua
         local p = package_manager.directory("/packages/directory")
         p.install_table({
-            { repo = "stg73/lua-modules", branch = "main" },
+            { repo = "stg73/modules.nvim", branch = "main" },
             hoge = { repo = "https://example.com/hoge.git", tag = "v0.0.1" },
             fuga = "https://example.com/fuga.git",
         })
