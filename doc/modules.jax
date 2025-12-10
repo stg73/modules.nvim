@@ -535,25 +535,6 @@ romaji.kana                                                      *romaji.kana*
     平仮名のパターン
 
 ==============================================================================
-SKK辞書を編集する                                        *lua-lib-skk_command*
-
-SKKを編集するためのコマンド
-`vim.api.nvim_create_user_command` の引数として与える関数を提供する
-
-skk_command.annotate({opts})                          *skk_command.annotate()*
-    任意の範囲に分類注釈を追加するコマンド
-
-    例:
->lua
-        vim.api.nvim_create_user_command("SkkAnnotate",
-        skk_command.annotate,
-        {bar = true,range = "%"})
-<
-
-    引数: ~
-      • {opts}  (`table`)
-
-==============================================================================
 SKKを解析する                                                    *lua-lib-skk*
 
 構文解析したり バッファからSKKを読み込んで変換をしたりする
@@ -594,6 +575,25 @@ skk.hennkann.fn.buf_reverse({buf})({kouho})    *skk.hennkann.fn.buf_reverse()*
 
     返り値: ~
         (`string?`) 見出し
+
+------------------------------------------------------------------------------
+SKK辞書を編集する                                                *skk.command*
+
+SKKを編集するためのコマンド
+`vim.api.nvim_create_user_command` の引数として与える関数を提供する
+
+skk.command.annotate({opts})                          *skk.command.annotate()*
+    任意の範囲に分類注釈を追加するコマンド
+
+    例:
+>lua
+        vim.api.nvim_create_user_command("SkkAnnotate",
+        skk.command.annotate,
+        {bar = true,range = "%"})
+<
+
+    引数: ~
+      • {opts}  (`table`)
 
 ==============================================================================
 文字列を楽に扱う                                        *lua-lib-string_utils*

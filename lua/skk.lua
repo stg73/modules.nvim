@@ -23,6 +23,9 @@ local C = M.count
 M.hennkann = {}
 local H = M.hennkann
 
+M.command = {}
+local cmd = M.command
+
 
 local regex = require("regex")
 local tbl = require("tbl")
@@ -178,6 +181,50 @@ end
 -- 上の逆変換版
 H.fn.buf_reverse = function(buf)
     return tbl.pipe({ vim.api.nvim_buf_get_lines(buf,0,-1,false), tbl.filter(I.entry), tbl.map(H.get_midasi_kouhos), tbl.fn_reverse })
+end
+
+-- オプションの違いを吸収 -- substituteコマンドをグローバルにする
+local function g()
+    return vim.o.gdefault and "" or "g"
+end
+
+function cmd.sort(opts) -- "skkdic-expr2"のラッパー
+    local current_search = vim.fn.getreg('/')
+    if opts.range == 0 then -- 既定のrange
+        vim.cmd([[$?;; okuri-ari entries.?;$!skkdic-expr2]]) -- ファイル上部のコメントを削除しない
+    else
+        vim.cmd(opts.line1 .. "," .. opts.line2 .. "!skkdic-expr2")
+    end
+    vim.fn.setreg('/',current_search)
+    vim.cmd.nohlsearch()
+end
+
+function cmd.annotate(opts)
+    if vim.b.skk_bunnrui then
+        local current_search = vim.fn.getreg('/')
+        local e = "/e" .. g()
+        vim.cmd(opts.line1 .. ',' .. opts.line2 .. "global/\\v^(;; )@!/" .. [[substitute/\v(\/[^;]+)@<=\/@=/;]] .. e .. [[ | substitute/\v;@<=(\[]] .. vim.b.skk_bunnrui .. [[\])@!/\[]] .. vim.b.skk_bunnrui .. "\\]" .. e)
+        vim.fn.setreg('/',current_search)
+        vim.cmd.nohlsearch()
+    end
+end
+
+function cmd.count_annotation_errors(opts)
+    local current_search = vim.fn.getreg('/')
+    vim.cmd.skkSearchAnnotationErrors()
+    vim.cmd(opts.line1 .. "," .. opts.line2 .. [[substitute///ne]] .. g())
+    vim.fn.setreg('/',current_search)
+    vim.cmd.nohlsearch()
+end
+
+function cmd.search_annotation_errors(opts)
+    if vim.b.skk_bunnrui then
+        vim.fn.setreg('/',[[\v\/@<=([^/]+;\[]] .. vim.b.skk_bunnrui .. [[\])@![^/]+]])
+    end
+end
+
+function cmd.search_midasi_kouho(opts)
+    vim.fn.setreg('/',[[\v(^(;; )@!.+ .*\/)@<=[^/]+]])
 end
 
 return M

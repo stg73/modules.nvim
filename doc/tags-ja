@@ -18,7 +18,6 @@ lua-lib-package_manager	modules.jax	/*lua-lib-package_manager*
 lua-lib-regex	modules.jax	/*lua-lib-regex*
 lua-lib-romaji	modules.jax	/*lua-lib-romaji*
 lua-lib-skk	modules.jax	/*lua-lib-skk*
-lua-lib-skk_command	modules.jax	/*lua-lib-skk_command*
 lua-lib-string_utils	modules.jax	/*lua-lib-string_utils*
 lua-lib-substitute_command	modules.jax	/*lua-lib-substitute_command*
 lua-lib-tbl	modules.jax	/*lua-lib-tbl*
@@ -56,12 +55,13 @@ regex.substitute()	modules.jax	/*regex.substitute()*
 romaji.kana	modules.jax	/*romaji.kana*
 romaji.romaji	modules.jax	/*romaji.romaji*
 romaji.romaji_rennzoku	modules.jax	/*romaji.romaji_rennzoku*
+skk.command	modules.jax	/*skk.command*
+skk.command.annotate()	modules.jax	/*skk.command.annotate()*
 skk.hennkann	modules.jax	/*skk.hennkann*
 skk.hennkann.fn.buf()	modules.jax	/*skk.hennkann.fn.buf()*
 skk.hennkann.fn.buf_reverse()	modules.jax	/*skk.hennkann.fn.buf_reverse()*
 skk.parse	modules.jax	/*skk.parse*
 skk.parse.line()	modules.jax	/*skk.parse.line()*
-skk_command.annotate()	modules.jax	/*skk_command.annotate()*
 string_utils.get	modules.jax	/*string_utils.get*
 string_utils.get.original_name_of_backup_file()	modules.jax	/*string_utils.get.original_name_of_backup_file()*
 string_utils.get.path_of_url()	modules.jax	/*string_utils.get.path_of_url()*
