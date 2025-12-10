@@ -7,7 +7,7 @@ end
 
 function M.sort(opts) -- "skkdic-expr2"のラッパー
     local current_search = vim.fn.getreg('/')
-    if opts.line1 == opts.line2 then -- 既定のrangeを擬似的に再現する
+    if opts.range == 0 then -- 既定のrange
         vim.cmd([[$?;; okuri-ari entries.?;$!skkdic-expr2]]) -- ファイル上部のコメントを削除しない
     else
         vim.cmd(opts.line1 .. "," .. opts.line2 .. "!skkdic-expr2")
