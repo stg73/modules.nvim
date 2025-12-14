@@ -38,6 +38,7 @@ package_manager.directory().load_opt()	modules.jax	/*package_manager.directory()
 package_manager.directory().load_table()	modules.jax	/*package_manager.directory().load_table()*
 package_manager.directory().uninstall()	modules.jax	/*package_manager.directory().uninstall()*
 package_manager.directory().update()	modules.jax	/*package_manager.directory().update()*
+package_manager.lazy()	modules.jax	/*package_manager.lazy()*
 regex.concat()	modules.jax	/*regex.concat()*
 regex.convert()	modules.jax	/*regex.convert()*
 regex.escape()	modules.jax	/*regex.escape()*

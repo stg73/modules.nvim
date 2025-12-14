@@ -184,6 +184,21 @@ open_webpage.open({str})                                 *open_webpage.open()*
 
 パッケージマネージャー
 
+lazy({opt})({callback})                               *package_manager.lazy()*
+    指定した条件のときに関数を1度だけ実行する
+
+    例: >lua
+        -- "h" を入力したら "hoge" を表示する
+        package_manager.lazy({
+            nmap = "h"
+        })(function()
+            print("hoge")
+        end)
+<
+    引数: ~
+        {opt}       (`table`) 条件 load_opt と同じ
+        {callback}  (`function`) 呼び出す関数
+
 package_manager.directory({dir})                 *package_manager.directory()*
     パッケージを管理するディレクトリを設定する
 
@@ -203,12 +218,12 @@ load_opt({opt})({name})               *package_manager.directory().load_opt()*
     {name} のパッケージを {opt} のタイミングで ロードする
 
     引数: ~
-      • {opt}  (`table`) オプション
-               • {event}? (`string`) そのイベントがトリガーされたとき
-               • {pattern}? (`string`) {event} と併用する
-                 オートコマンドのパターン
-               • {[nticvo]map}? (`string`) そのキーが押されたとき
-               • {now}? (`string`) 真の場合 すぐに読み込む
+      • {opt}   (`table`) オプション
+               • {lazy}? (`table`) 指定された場合は遅延読み込みする 以下を含む
+                   • {event}? (`string`) そのイベントがトリガーされたとき
+                   • {pattern}? (`string`) {event} と併用する
+                     オートコマンドのパターン
+                   • {[nticvo]map}? (`string`) そのキーが押されたとき
 
                さらに 実行する関数を指定できる
                • {setup}? (`string`) すぐに実行される

@@ -4,6 +4,44 @@ local s = require("string_utils")
 local r = require("regex")
 local t = require("tbl")
 
+function M.lazy(opt) return function(callback)
+    -- 特定のキーが押されたらloadする
+    local function load_map(mode,map)
+        vim.keymap.set(mode,map,function()
+            vim.keymap.del(mode,map)
+            callback()
+            return map
+        end,{ expr = true, desc = opt.desc })
+    end
+
+    if opt.event then
+        vim.api.nvim_create_autocmd(opt.event,{
+            pattern = opt.pattern,
+            callback = callback,
+            once = true,
+            desc = opt.desc,
+        })
+    end
+    if opt.nmap then
+        load_map("n",opt.nmap)
+    end
+    if opt.tmap then
+        load_map("n",opt.tmap)
+    end
+    if opt.vmap then
+        load_map("n",opt.vmap)
+    end
+    if opt.imap then
+        load_map("n",opt.imap)
+    end
+    if opt.omap then
+        load_map("n",opt.omap)
+    end
+    if opt.cmap then
+        load_map("n",opt.cmap)
+    end
+end end
+
 -- パッケージを管理するディレクトリを決める
 function M.directory(d)
     local dir = r.remove("//$")(d)
@@ -130,42 +168,10 @@ function M.directory(d)
                 opt.config()
             end
         end
-        -- 特定のキーが押されたらloadする
-        local function load_map(mode,map)
-            vim.keymap.set(mode,map,function()
-                vim.keymap.del(mode,map)
-                load()
-                return map
-            end,{ expr = true, desc = "load " .. name })
-        end
-
-        if opt.event then
-            vim.api.nvim_create_autocmd(opt.event,{
-                pattern = opt.pattern,
-                callback = load,
-                once = true,
-                desc = "load " .. name,
-            })
-        end
-        if opt.nmap then
-            load_map("n",opt.nmap)
-        end
-        if opt.tmap then
-            load_map("n",opt.tmap)
-        end
-        if opt.vmap then
-            load_map("n",opt.vmap)
-        end
-        if opt.imap then
-            load_map("n",opt.imap)
-        end
-        if opt.omap then
-            load_map("n",opt.omap)
-        end
-        if opt.cmap then
-            load_map("n",opt.cmap)
-        end
-        if opt.now then
+        if opt.lazy then
+            opt.lazy.desc = "load " .. name
+            M.lazy(opt.lazy)(load)
+        else
             load()
         end
     end end
