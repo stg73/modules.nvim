@@ -183,6 +183,8 @@ open_webpage.open({str})                                 *open_webpage.open()*
 パッケージマネージャー                               *lua-lib-package_manager*
 
 パッケージマネージャー
+使用例:
+https://github.com/stg73/config.nvim/blob/main/lua/packages.lua
 
 lazy({opt})({callback})                               *package_manager.lazy()*
     指定した条件のときに関数を1度だけ実行する
