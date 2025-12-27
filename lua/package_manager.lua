@@ -40,6 +40,16 @@ function M.lazy(opt) return function(callback)
     if opt.cmap then
         load_map("n",opt.cmap)
     end
+    if opt.command then
+        vim.api.nvim_create_user_command(opt.command,function(opts)
+            vim.api.nvim_del_user_command(opt.command)
+            callback()
+            local command_exists = vim.api.nvim_get_commands({})[opt.command]
+            if command_exists then
+                vim.cmd({ cmd = opt.command, args = opts.fargs })
+            end
+        end,{ nargs = "*", desc = opt.desc })
+    end
 end end
 
 -- パッケージを管理するディレクトリを決める
