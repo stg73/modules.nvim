@@ -29,13 +29,14 @@ open_github.get_from_table()	modules.jax	/*open_github.get_from_table()*
 open_github.open()	modules.jax	/*open_github.open()*
 open_webpage.open()	modules.jax	/*open_webpage.open()*
 package_manager.directory()	modules.jax	/*package_manager.directory()*
-package_manager.directory().available_packages	modules.jax	/*package_manager.directory().available_packages*
 package_manager.directory().install()	modules.jax	/*package_manager.directory().install()*
 package_manager.directory().install_table()	modules.jax	/*package_manager.directory().install_table()*
+package_manager.directory().installed	modules.jax	/*package_manager.directory().installed*
 package_manager.directory().is_installed()	modules.jax	/*package_manager.directory().is_installed()*
 package_manager.directory().load()	modules.jax	/*package_manager.directory().load()*
 package_manager.directory().load_opt()	modules.jax	/*package_manager.directory().load_opt()*
 package_manager.directory().load_table()	modules.jax	/*package_manager.directory().load_table()*
+package_manager.directory().loaded	modules.jax	/*package_manager.directory().loaded*
 package_manager.directory().uninstall()	modules.jax	/*package_manager.directory().uninstall()*
 package_manager.directory().update()	modules.jax	/*package_manager.directory().update()*
 package_manager.lazy()	modules.jax	/*package_manager.lazy()*

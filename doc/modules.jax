@@ -253,7 +253,10 @@ load_table({opts})                 *package_manager.directory().load_table()*
     引数: ~
       • {opts}  (`table`)
 
-available_packages            *package_manager.directory().available_packages*
+loaded                                    *package_manager.directory().loaded*
+    読み込まれたプラグイン
+
+installed                              *package_manager.directory().installed*
     インストールされているパッケージ
 
 install({name})({pkg})                 *package_manager.directory().install()*

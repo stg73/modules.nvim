@@ -55,12 +55,12 @@ end end
 -- パッケージを管理するディレクトリを決める
 function M.directory(d)
     local dir = r.remove("//$")(d)
-    local available_packages = dir .. "/available_packages.json"
+    local installed = dir .. "/_installed.json"
 
     local D = {}
 
-    local f = io.open(available_packages,"r")
-    D.available_packages = vim.json.decode(f:read("a"))
+    local f = io.open(installed,"r")
+    D.installed = vim.json.decode(f:read("a"))
     f:close()
 
     function D.same_package(pkg1) return function(pkg2)
@@ -75,7 +75,7 @@ function M.directory(d)
     end end
 
     function D.is_installed(pkg)
-        return t.match(D.same_package(pkg))(vim.tbl_values(D.available_packages))
+        return t.match(D.same_package(pkg))(vim.tbl_values(D.installed))
     end
 
     -- vim.system のエラー出力用
@@ -113,9 +113,9 @@ function M.directory(d)
             hoge("--branch",pkg.branch or pkg.tag),
         },on_exit)
 
-        D.available_packages[name] = pkg
-        local f = io.open(available_packages,"w")
-        f:write(vim.json.encode(D.available_packages))
+        D.installed[name] = pkg
+        local f = io.open(installed,"w")
+        f:write(vim.json.encode(D.installed))
         f:close()
 
         return name
@@ -128,9 +128,9 @@ function M.directory(d)
             recursive = true,
             force = true
         })
-        D.available_packages[name] = nil
-        local f = io.open(available_packages,"w")
-        f:write(vim.json.encode(D.available_packages))
+        D.installed[name] = nil
+        local f = io.open(installed,"w")
+        f:write(vim.json.encode(D.installed))
         f:close()
 
         return name
@@ -144,9 +144,19 @@ function M.directory(d)
         return name
     end
 
+    D.loaded = {}
+    -- すでに読み込まれたプラグインがあれば入れる
+    tbl.map(function(path)
+        if r.is(dir) then
+            local name = vim.fs.basename(path)
+            D.loaded[name] = D.installed[name]
+        end
+    end)(vim.api.nvim_list_runtime_paths())
+
     -- runtimepathに追加 の上位互換
     function D.load(name)
         vim.opt.runtimepath:append(dir .. "/" .. name)
+        D.loaded[name] = D.installed[name]
 
         if vim.v.vim_did_enter ~= 0 then
             -- vimの代わりに plugin ディレクトリにあるファイルをソースする
@@ -157,14 +167,9 @@ function M.directory(d)
         end
     end
 
-    function D.is_loaded(name)
-        local path = r.gsub("////")("//")(dir .. "/" .. name)
-        return r.has("/V," .. path .. "/v(,|$)")(vim.o.runtimepath)
-    end
-
     function D.load_opt(name) return function(opt)
         -- 1回超過loadしないように
-        if D.is_loaded(name) then
+        if D.loaded[name] then
             return
         end
 
