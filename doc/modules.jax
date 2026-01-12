@@ -192,7 +192,9 @@ lazy({opt})({callback})                               *package_manager.lazy()*
     例: >lua
         -- "h" を入力したら "hoge" を表示する
         package_manager.lazy({
-            nmap = "h"
+            keys = {
+                { "n", "h" },
+            },
         })(function()
             print("hoge")
         end)
@@ -225,7 +227,9 @@ load_opt({opt})({name})               *package_manager.directory().load_opt()*
                    • {event}? (`string`) そのイベントがトリガーされたとき
                    • {pattern}? (`string`) {event} と併用する
                      オートコマンドのパターン
-                   • {[nticvo]map}? (`string`) そのキーが押されたとき
+                   • {keys}? (`[string|string[], string|string[]][]`)
+                     |vim.keymap.set()| の {modes} と、 {lhs} のリスト、の組
+                     のリスト
                    • {command}? (`string`) そのコマンドを実行したとき
 
                さらに 実行する関数を指定できる
