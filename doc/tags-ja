@@ -9,9 +9,11 @@ custom_url_scheme.add()	modules.jax	/*custom_url_scheme.add()*
 custom_url_scheme.init()	modules.jax	/*custom_url_scheme.init()*
 custom_url_scheme.schemes()	modules.jax	/*custom_url_scheme.schemes()*
 get_keymap.get()	modules.jax	/*get_keymap.get()*
+lazy_call.lazy()	modules.jax	/*lazy_call.lazy()*
 lua-lib-character_table	modules.jax	/*lua-lib-character_table*
 lua-lib-custom_url_scheme	modules.jax	/*lua-lib-custom_url_scheme*
 lua-lib-get_keymap	modules.jax	/*lua-lib-get_keymap*
+lua-lib-lazy_call	modules.jax	/*lua-lib-lazy_call*
 lua-lib-open_github	modules.jax	/*lua-lib-open_github*
 lua-lib-open_webpage	modules.jax	/*lua-lib-open_webpage*
 lua-lib-package_manager	modules.jax	/*lua-lib-package_manager*
@@ -39,7 +41,6 @@ package_manager.directory().load_table()	modules.jax	/*package_manager.directory
 package_manager.directory().loaded	modules.jax	/*package_manager.directory().loaded*
 package_manager.directory().uninstall()	modules.jax	/*package_manager.directory().uninstall()*
 package_manager.directory().update()	modules.jax	/*package_manager.directory().update()*
-package_manager.lazy()	modules.jax	/*package_manager.lazy()*
 regex.concat()	modules.jax	/*regex.concat()*
 regex.convert()	modules.jax	/*regex.convert()*
 regex.escape()	modules.jax	/*regex.escape()*

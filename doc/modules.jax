@@ -180,18 +180,14 @@ open_webpage.open({str})                                 *open_webpage.open()*
         (`table`) `vim.system():wait()` と同じ
 
 ==============================================================================
-パッケージマネージャー                               *lua-lib-package_manager*
+関数を遅延して呼び出す                                     *lua-lib-lazy_call*
 
-パッケージマネージャー
-使用例:
-https://github.com/stg73/config.nvim/blob/main/lua/packages.lua
-
-lazy({opt})({callback})                               *package_manager.lazy()*
+lazy_call.lazy({opt})({callback})                           *lazy_call.lazy()*
     指定した条件のときに関数を1度だけ実行する
 
     例: >lua
         -- "h" を入力したら "hoge" を表示する
-        package_manager.lazy({
+        lazy_call.lazy({
             keys = {
                 { "n", "h" },
             },
@@ -209,6 +205,13 @@ lazy({opt})({callback})                               *package_manager.lazy()*
                       のリスト
                     • {command}? (`string`) そのコマンドを実行したとき
       • {callback}  (`function`) 呼び出す関数
+
+==============================================================================
+パッケージマネージャー                               *lua-lib-package_manager*
+
+パッケージマネージャー
+使用例:
+https://github.com/stg73/config.nvim/blob/main/lua/packages.lua
 
 package_manager.directory({dir})                 *package_manager.directory()*
     パッケージを管理するディレクトリを設定する
@@ -231,7 +234,7 @@ load_opt({opt})({name})               *package_manager.directory().load_opt()*
     引数: ~
       • {opt}   (`table`) オプション
                • {lazy}? (`table`) 指定された場合は遅延読み込みする
-                 |package_manager.lazy()| の {opt} と同じ
+                 |lazy_call.lazy()| の {opt} と同じ
                • {setup}? (`string`) すぐに実行される
                • {config}? (`string`) ロードされた後に実行される
       • {name}  (`string`) パッケージの名前
