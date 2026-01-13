@@ -249,7 +249,11 @@ load_table({opts})                 *package_manager.directory().load_table()*
         p.load_table({
             ["vimdoc-ja"] = { event = "CmdLineEnter" },
             ["jumpcursor.vim"] = {
-                nmap = "<Plug>(jumpcursor-jump)",
+                lazy = {
+                    keys = {
+                        { "n", "<Plug>(jumpcursor-jump)", }
+                    },
+                },
                 setup = function()
                     vim.keymap.set('n','<leader>j','<Plug>(jumpcursor-jump)')
                 end,
