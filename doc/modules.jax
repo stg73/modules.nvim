@@ -200,8 +200,15 @@ lazy({opt})({callback})                               *package_manager.lazy()*
         end)
 <
     引数: ~
-        {opt}       (`table`) 条件 load_opt と同じ
-        {callback}  (`function`) 呼び出す関数
+      • {opt}       (`table`) 条件
+                    • {event}? (`string`) そのイベントがトリガーされたとき
+                    • {pattern}? (`string`) {event} と併用する
+                      オートコマンドのパターン
+                    • {keys}? (`[string|string[], string|string[]][]`)
+                      |vim.keymap.set()| の {modes} と、 {lhs} のリスト、の組
+                      のリスト
+                    • {command}? (`string`) そのコマンドを実行したとき
+      • {callback}  (`function`) 呼び出す関数
 
 package_manager.directory({dir})                 *package_manager.directory()*
     パッケージを管理するディレクトリを設定する
@@ -223,16 +230,8 @@ load_opt({opt})({name})               *package_manager.directory().load_opt()*
 
     引数: ~
       • {opt}   (`table`) オプション
-               • {lazy}? (`table`) 指定された場合は遅延読み込みする 以下を含む
-                   • {event}? (`string`) そのイベントがトリガーされたとき
-                   • {pattern}? (`string`) {event} と併用する
-                     オートコマンドのパターン
-                   • {keys}? (`[string|string[], string|string[]][]`)
-                     |vim.keymap.set()| の {modes} と、 {lhs} のリスト、の組
-                     のリスト
-                   • {command}? (`string`) そのコマンドを実行したとき
-
-               さらに 実行する関数を指定できる
+               • {lazy}? (`table`) 指定された場合は遅延読み込みする
+                 |package_manager.lazy()| の {opt} と同じ
                • {setup}? (`string`) すぐに実行される
                • {config}? (`string`) ロードされた後に実行される
       • {name}  (`string`) パッケージの名前
