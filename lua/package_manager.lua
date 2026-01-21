@@ -130,9 +130,12 @@ function M.directory(d)
         end
 
         local function load()
+            if opt.hook_pre then
+                opt.hook_pre()
+            end
             D.load(name)
-            if opt.config then
-                opt.config()
+            if opt.hook_post then
+                opt.hook_post()
             end
         end
         if opt.lazy then

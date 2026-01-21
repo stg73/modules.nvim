@@ -236,7 +236,8 @@ load_opt({opt})({name})               *package_manager.directory().load_opt()*
                • {lazy}? (`table`) 指定された場合は遅延読み込みする
                  |lazy_call.lazy()| の {opt} と同じ
                • {setup}? (`string`) すぐに実行される
-               • {config}? (`string`) ロードされた後に実行される
+               • {hook_pre}? (`string`) ロードされる前に実行される
+               • {hook_post}) ロードされた後に実行される
       • {name}  (`string`) パッケージの名前
 
 load_table({opts})                 *package_manager.directory().load_table()*
