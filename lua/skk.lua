@@ -211,7 +211,7 @@ end
 
 function cmd.count_annotation_errors(opts)
     local current_search = vim.fn.getreg('/')
-    vim.cmd.skkSearchAnnotationErrors()
+    cmd.search_annotation_errors()
     vim.cmd(opts.line1 .. "," .. opts.line2 .. [[substitute///ne]] .. g())
     vim.fn.setreg('/',current_search)
     vim.cmd.nohlsearch()
