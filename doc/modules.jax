@@ -39,6 +39,90 @@ character_table.Hiragana_Katakana          *character_table.Hiragana_Katakana*
     平仮名と片仮名
 
 ==============================================================================
+進法を変換する                                          *lua-lib-convert_base*
+
+進法を変換する
+
+from({base})({list})                                     *convert_base.from()*
+    数列 {list} を {base} 進法とみなした数を取得する
+
+    例: >lua
+        convert_base.from(2)({1,0})
+        -- 2
+
+        convert_base.from(2)({1,1,1})
+        -- 7
+
+        -- 文字列を16進法で解釈する
+        convert_base.from(16)(tbl.map(function(x)
+            return ({
+                ["0"] = 0,
+                ["1"] = 1,
+                ["2"] = 2
+                ["3"] = 3,
+                ["4"] = 4,
+                ["5"] = 5,
+                ["6"] = 6,
+                ["7"] = 7,
+                ["8"] = 8,
+                ["9"] = 9,
+                A = 10,
+                B = 11,
+                C = 12,
+                D = 13,
+                E = 14,
+                F = 15,
+            })[x]
+        end)(vim.split("ABCD",""))) == 0xABCD
+        -- true
+<
+
+    引数: ~
+        {base}  (`number`) 進法
+        {list}  (`number[]`) 数列
+
+    返り値: ~
+        (`number`) 数
+        |convert_base.to()| の {num}
+
+to({base})({num})                                          *convert_base.to()*
+    {int} を {base} 進法で表現した数列を取得する
+
+    例: >lua
+        convert_base.to(2)(2)
+        -- { 1, 0 }
+
+        convert_base.to(2)(7)
+        -- { 1, 1, 1 }
+<
+
+    引数: ~
+        {base}  (`number`) 進法
+        {num}   (`number`) 数
+
+    返り値: ~
+        (`number[]`) 数列
+        |convert_base.from()| の {list}
+
+align({len})({list})                                    *convert_base.align()*
+    10 を 0010 にするようなもの
+
+    例: >lua
+        convert_base.align(4)({1,0})
+        -- { 0, 0, 1, 0 }
+
+        convert_base.align(7)({1,1,1})
+        -- { 0, 0, 0, 0, 1, 1, 1 }
+<
+
+    引数: ~
+        {len}   (`integer`) リストの長さ
+        {list}  (`number[]`) 数列
+
+    返り値: ~
+        (`number[]`) 変換結果
+
+==============================================================================
 カスタムURLスキームを作る                          *lua-lib-custom_url_scheme*
 
 カスタムURLスキームを作ってneovim内で使えるようにする
