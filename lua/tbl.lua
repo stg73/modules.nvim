@@ -203,4 +203,32 @@ function M.equal_to_any_element(cond) return function(x)
     end
 end end
 
+function M.range(s) return function(e)
+    local t = {}
+    local function loop(i)
+        if i <= e then
+            table.insert(t,i)
+            loop(i + 1)
+        end
+    end
+    loop(s)
+
+    return t
+end end
+
+function M.chunks(size) return function(tbl)
+    local t = {}
+    local function loop(i)
+        if i <= #tbl then
+            local sub_idx = math.ceil(i / size)
+            t[sub_idx] = t[sub_idx] or {}
+            table.insert(t[sub_idx],tbl[i])
+            loop(i + 1)
+        end
+    end
+    loop(1)
+
+    return t
+end end
+
 return M
