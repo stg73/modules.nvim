@@ -23,7 +23,7 @@ function M.to(base) return function(int)
     end
     loop(int)
 
-    return vim.fn.reverse(int_tbl)
+    return vim.iter(int_tbl):rev():totable()
 end end
 
 function M.align(len) return function(int_tbl)
