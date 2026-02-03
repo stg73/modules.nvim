@@ -23,6 +23,7 @@ lua-lib-open_webpage	modules.jax	/*lua-lib-open_webpage*
 lua-lib-package_manager	modules.jax	/*lua-lib-package_manager*
 lua-lib-regex	modules.jax	/*lua-lib-regex*
 lua-lib-romaji	modules.jax	/*lua-lib-romaji*
+lua-lib-sha1	modules.jax	/*lua-lib-sha1*
 lua-lib-skk	modules.jax	/*lua-lib-skk*
 lua-lib-string_utils	modules.jax	/*lua-lib-string_utils*
 lua-lib-substitute_command	modules.jax	/*lua-lib-substitute_command*
@@ -62,6 +63,7 @@ regex.substitute()	modules.jax	/*regex.substitute()*
 romaji.kana	modules.jax	/*romaji.kana*
 romaji.romaji	modules.jax	/*romaji.romaji*
 romaji.romaji_rennzoku	modules.jax	/*romaji.romaji_rennzoku*
+sha1.sha1()	modules.jax	/*sha1.sha1()*
 skk.command	modules.jax	/*skk.command*
 skk.command.annotate()	modules.jax	/*skk.command.annotate()*
 skk.hennkann	modules.jax	/*skk.hennkann*
