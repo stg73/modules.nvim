@@ -18,18 +18,10 @@ function M.sha1(msg)
     local msg_bit_len = string.len(msg) * 8
     vim.list_extend(bytes,base.align(8)(base.to(2 ^ 8)(msg_bit_len)))
 
-    local H0 = 0x67452301
-    local H1 = 0xEFCDAB89
-    local H2 = 0x98BADCFE
-    local H3 = 0x10325476
-    local H4 = 0xC3D2E1F0
+    local H = { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 }
 
     local function update_state(block)
-        local A = H0
-        local B = H1
-        local C = H2
-        local D = H3
-        local E = H4
+        local A, B, C, D, E = unpack(H)
 
         local function S(n,x)
             return bit.bor(bit.lshift(x,n),bit.rshift(x,32 - n))
@@ -76,11 +68,11 @@ function M.sha1(msg)
             A = TEMP
         end)(tbl.range(1)(80))
 
-        H0 = (H0 + A) % (2 ^ 32)
-        H1 = (H1 + B) % (2 ^ 32)
-        H2 = (H2 + C) % (2 ^ 32)
-        H3 = (H3 + D) % (2 ^ 32)
-        H4 = (H4 + E) % (2 ^ 32)
+        H[1] = (H[1] + A) % (2 ^ 32)
+        H[2] = (H[2] + B) % (2 ^ 32)
+        H[3] = (H[3] + C) % (2 ^ 32)
+        H[4] = (H[4] + D) % (2 ^ 32)
+        H[5] = (H[5] + E) % (2 ^ 32)
     end
 
     tbl.map(update_state)(tbl.chunks(64)(bytes))
@@ -88,7 +80,7 @@ function M.sha1(msg)
     return table.concat(tbl.map(function(H)
         local big_endian = base.to(2 ^ 8)(H)
         return table.concat(tbl.map(string.char)(big_endian))
-    end)({ H0, H1, H2, H3, H4, }))
+    end)(H))
 end
 
 return M
