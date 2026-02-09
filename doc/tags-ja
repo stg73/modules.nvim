@@ -80,9 +80,7 @@ string_utils.remove.trailing_space()	modules.jax	/*string_utils.remove.trailing_
 substitute_command.create()	modules.jax	/*substitute_command.create()*
 tbl.chunks()	modules.jax	/*tbl.chunks()*
 tbl.compose()	modules.jax	/*tbl.compose()*
-tbl.curry2()	modules.jax	/*tbl.curry2()*
-tbl.curry3()	modules.jax	/*tbl.curry3()*
-tbl.curry4()	modules.jax	/*tbl.curry4()*
+tbl.curry()	modules.jax	/*tbl.curry()*
 tbl.filter()	modules.jax	/*tbl.filter()*
 tbl.flip()	modules.jax	/*tbl.flip()*
 tbl.fold()	modules.jax	/*tbl.fold()*

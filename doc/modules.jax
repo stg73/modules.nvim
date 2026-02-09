@@ -803,32 +803,15 @@ tbl.compose({fn_tbl})                                          *tbl.compose()*
     返り値: ~
         (`function`) 合成された関数
 
-tbl.curry2({fn})                                                *tbl.curry2()*
-    2変数関数をカリー化する
+tbl.curry({n})({fn})                                             *tbl.curry()*
+    関数をカリー化する
 >lua
-    tbl.curry2(table.concat)(tbl)(str) == table.concat(tbl,str)
+    tbl.curry(2)(table.concat)(tbl)(str) == table.concat(tbl,str)
 <
 
     引数: ~
-      • {fn}  (`function`) 2変数関数
-
-    返り値: ~
-        (`function`) カリー化された関数
-
-tbl.curry3({fn})                                                *tbl.curry3()*
-    3変数関数をカリー化する
-
-    引数: ~
-      • {fn}  (`function`) 3変数関数
-
-    返り値: ~
-        (`function`) カリー化された関数
-
-tbl.curry4({fn})                                                *tbl.curry4()*
-    4変数関数をカリー化する
-
-    引数: ~
-      • {fn}  (`function`) 4変数関数
+      • {n}   (`integer?`, 既定: `2`) {fn} の引数の数
+      • {fn}  (`function`) カリー化する関数
 
     返り値: ~
         (`function`) カリー化された関数

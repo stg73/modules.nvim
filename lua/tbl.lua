@@ -162,36 +162,21 @@ function M.fold(fn) return function(tbl)
     return f(tbl[1],2)
 end end
 
--- 関数をカリー化
-function M.curry2(fn)
-    return function(x)
-        return function(y)
-            return fn(x,y)
-        end
-    end
-end
-
-function M.curry3(fn)
-    return function(x)
-        return function(y)
-            return function(z)
-                return fn(x,y,z)
+function M.curry(n) return function(fn)
+    n = n or 2
+    local args = {}
+    local function loop(i)
+        if i > n then
+            return fn(unpack(args))
+        else
+            return function(x)
+                table.insert(args,x)
+                return loop(i + 1)
             end
         end
     end
-end
-
-function M.curry4(fn)
-    return function(x)
-        return function(y)
-            return function(z)
-                return function(a)
-                    return fn(x,y,z,a)
-                end
-            end
-        end
-    end
-end
+    return loop(1)
+end end
 
 function M.equal_to_any_element(cond) return function(x)
     local function f(y) return y == x end
