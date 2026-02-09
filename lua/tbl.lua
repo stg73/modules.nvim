@@ -164,18 +164,18 @@ end end
 
 function M.curry(n) return function(fn)
     n = n or 2
-    local args = {}
-    local function loop(i)
-        if i > n then
+    local function loop(args)
+        if #args >= n then
             return fn(unpack(args))
         else
             return function(x)
+                local args = vim.deepcopy(args)
                 table.insert(args,x)
-                return loop(i + 1)
+                return loop(args)
             end
         end
     end
-    return loop(1)
+    return loop({})
 end end
 
 function M.equal_to_any_element(cond) return function(x)
