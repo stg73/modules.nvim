@@ -205,14 +205,10 @@ end end
 
 function M.range(s) return function(e)
     local t = {}
-    local function loop(i)
-        if i <= e then
-            table.insert(t,i)
-            loop(i + 1)
-        end
+    for i = s, e do
+        table.insert(t,i)
+        i = i + 1
     end
-    loop(s)
-
     return t
 end end
 
