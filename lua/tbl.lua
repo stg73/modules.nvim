@@ -203,7 +203,6 @@ function M.range(s) return function(e)
     local t = {}
     for i = s, e do
         table.insert(t,i)
-        i = i + 1
     end
     return t
 end end
