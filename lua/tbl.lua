@@ -11,15 +11,6 @@ function M.filter(fn) return function(arg_tbl)
     return t
 end end
 
--- pre(arg)であればfn(arg)を返す そうでなければnilを返す
-function M.map_filter(fn) return function(pre) return function(arg)
-    if pre(arg) then
-        return fn(arg)
-    else
-        return nil
-    end
-end end end
-
 -- テーブルから条件に適合するものを検索する
 function M.match(pre) return function(tbl)
     local function f(i)
@@ -43,21 +34,6 @@ function M.map(fn) return function(arg_tbl)
         table.insert(t,retval)
     end
 
-    return t
-end end
-
-function M.foreach(fn) return function(arg_tbl)
-    local keys = vim.tbl_keys(arg_tbl)
-    M.map(function(key)
-        fn(key)(arg_tbl[key])
-    end)(keys)
-end end
-
-function M.map_map(fn) return function(arg_tbl)
-    local t = {}
-    M.foreach(function(key) return function(val)
-        t[key] = fn(val)
-    end end)(arg_tbl)
     return t
 end end
 

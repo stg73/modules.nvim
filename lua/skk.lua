@@ -63,7 +63,11 @@ function P.entry(entry)
     return {
         midasi = P.midasi(G.midasi(entry)),
         kouho_chunk = tbl.pipe({ entry, G.kouho_chunk, P.kouho_chunk, tbl.map(P.kouho) }),
-        okuri_chunk = tbl.map_filter(function(x) return x end)(tbl.get(1))(tbl.pipe({ entry, G.okuri_chunk, P.okuri_chunk, tbl.map(P.okuri_chunk_entry) }))
+        okuri_chunk = (function(t)
+            if t[1] then
+                return t
+            end
+        end)(tbl.pipe({ entry, G.okuri_chunk, P.okuri_chunk, tbl.map(P.okuri_chunk_entry) })),
     }
 end
 
@@ -135,7 +139,13 @@ G.annotation = regex.match(";@<=[^//]*")
 I.entry = regex.is("/S+ //.+//")
 
 -- 角括弧で示される候補の分類を取得
-G.bunnrui = tbl.map_filter(regex.match("(^/S+ .+;/[)@<=[^/]]+"))(I.entry)
+function G.bunnrui(x)
+    if I.entry(x) then
+        return regex.match("(^/S+ .+;/[)@<=[^/]]+")(x)
+    else
+        return nil
+    end
+end
 
 -- "skk-specialized"のシンタクスハイライトに使われている
 function G.bunnrui_from_table(exprs)

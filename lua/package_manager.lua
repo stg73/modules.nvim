@@ -88,13 +88,16 @@ function M.directory(d)
         return name
     end
 
-    D.install_table = t.foreach(D.install)
 
     function D.update(name)
         vim.system({"git","-C",dir .. "/" .. name,"pull","--rebase"},on_exit)
 
         return name
     end
+
+    D.install_table = t.pairs(function(k_v)
+        D.install(k_v[1])(k_v[2])
+    end)
 
     D.loaded = {}
     -- すでに読み込まれたプラグインがあれば入れる
@@ -146,7 +149,9 @@ function M.directory(d)
         end
     end end
 
-    D.load_table = t.foreach(D.load_opt)
+    D.load_table = t.pairs(function(k_v)
+        D.load_opt(k_v[1])(k_v[2])
+    end)
 
     return D
 end

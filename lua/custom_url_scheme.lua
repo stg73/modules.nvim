@@ -19,10 +19,8 @@ function M.init()
 end
 
 M.schemes = {} -- スキームと関数の対応を記録する
-local function add(scheme) return function(fn)
-    M.schemes[scheme] = fn
-end end
-
-M.add = t.foreach(add)
+M.add = function(t)
+    M.schemes = vim.tbl_extend("force",M.schemes,t)
+end
 
 return M
