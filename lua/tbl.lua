@@ -106,6 +106,17 @@ function M.map_map(fn) return function(arg_tbl)
     return t
 end end
 
+function M.pairs(fn) return function(arg_tbl)
+    local t = {}
+    for k,v in pairs(arg_tbl) do
+        local key_val = fn({k,v})
+        if key_val then
+            t[key_val[1]] = key_val[2]
+        end
+    end
+    return t
+end end
+
 -- M.mapの 関数と引数が逆
 function M.map_reverse(fn_tbl) return function(arg)
     local t = {}

@@ -88,6 +88,7 @@ tbl.get()	modules.jax	/*tbl.get()*
 tbl.map()	modules.jax	/*tbl.map()*
 tbl.map_reverse()	modules.jax	/*tbl.map_reverse()*
 tbl.match()	modules.jax	/*tbl.match()*
+tbl.pairs()	modules.jax	/*tbl.pairs()*
 tbl.pipe()	modules.jax	/*tbl.pipe()*
 tbl.range()	modules.jax	/*tbl.range()*
 vim.keymap.get()	modules.jax	/*vim.keymap.get()*

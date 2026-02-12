@@ -868,6 +868,27 @@ tbl.map({fn})({tbl})                                               *tbl.map()*
     返り値: ~
         (`any[]`)
 
+tbl.pairs({fn})({tbl})                                           *tbl.pairs()*
+    mapのキーを渡す版
+    mapの場合 {fn} にはキーの値が渡させるが、この関数はキーと値の組を渡す
+
+    例: >lua
+        -- テーブルのキーと値を入れ換える
+        tbl.pairs(vim.fn.reverse)({
+            x = 1,
+            y = 2,
+            z = 3,
+        })
+        -- { "x", "y", "z" }
+<
+
+    引数: ~
+      • {fn}   (`fun(any[]): any[]`) キーと値の組を取り、キーと値の組を返す関数
+      • {tbl}  (`any[]`) 引数のテーブル
+
+    返り値: ~
+        (`table`)
+
 tbl.map_reverse({fn_tbl})({x})                             *tbl.map_reverse()*
 >lua
     tbl.map_reverse(tbl)(x) == tbl.map(function(fn) return fn(x) end)(tbl)
