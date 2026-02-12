@@ -14,7 +14,7 @@ neovim用のluaモジュール群
 文字列と文字列の対応                                 *lua-lib-character_table*
 
 半角と全角、ローマ字と平仮名、など文字列の対応を集めたもの
-例えば `{{"あ","ア"},{"い","イ"}}` のようなもの
+例えば `{ あ = "ア", い = "イ" }` のようなもの
 
 character_table.Seionn_Dakuonn                *character_table.Seionn_Dakuonn*
     清音と濁音
@@ -158,7 +158,7 @@ custom_url_scheme.add({tbl})                         *custom_url_scheme.add()*
 ==============================================================================
 文字を置換するコマンドを作る                      *lua-lib-substitute_command*
 
-substitute_command.create({name})({tbl})         *substitute_command.create()*
+substitute_command.create_command({name})({tbl}) *substitute_command.create()*
 
     character_table を使って文字列を置換するユーザコマンドを作る
     例:
@@ -166,15 +166,15 @@ substitute_command.create({name})({tbl})         *substitute_command.create()*
         local s = require("substitute_command")
         local c = require("character_table")
 
-        s.create("Katakana")(c.Hiragana_Katakana)
-        s.create_reverse("Hiragana")(c.Hiragana_Katakana)
+        s.create_command("Katakana")(c.Hiragana_Katakana)
+        s.create_command("Hiragana")(tbl.pairs(vim.fn.reverse)(c.Hiragana_Katakana))
 <
     上では指定した範囲の平仮名を片仮名にするコマンド"Katakana"と
     片仮名を平仮名にするコマンド"Hiragana"を作っている
 
     引数: ~
       • {name}  (`string`) 作るコマンドの名前
-      • {tbl}   (`string[][]`) |lua-lib-character_table| の形式
+      • {tbl}   (`table`) |lua-lib-character_table| の形式
 
 ==============================================================================
 githubのファイルを閲覧                                   *lua-lib-open_github*
@@ -641,7 +641,9 @@ romaji.romaji                                                  *romaji.romaji*
 
     ローマ字を平仮名に変換する関数は
 >lua
-    regex.gsub(tbl.fn(character_table.Romaji_Hiragana))(romaji.romaji)
+    regex.gsub(function(x)
+        return character_table.Romaji_Hiragana[x]
+    end))(romaji.romaji)
 <
 
 romaji.romaji_rennzoku                                *romaji.romaji_rennzoku*

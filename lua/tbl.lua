@@ -1,50 +1,5 @@
 local M = {}
 
--- 主に character_tableを使って文字列置換をするため
--- テーブルの引数に対応する部分がテーブルの場合は扱いが少し異なる
-function M.fn(tbl) return function(x)
-    local function f(i)
-        local t = tbl[i]
-        if t == nil then
-            return nil
-        elseif type(t[1]) == "table" then
-            if M.equal_to_any_element(t[1])(x) then
-                return t[2]
-            else
-                return f(i + 1)
-            end
-        elseif t[1] == x then
-            return t[2]
-        else
-            return f(i + 1)
-        end
-    end
-
-    return f(1)
-end end
-
--- M.fnの逆
-function M.fn_reverse(tbl) return function(x)
-    local function f(i)
-        local t = tbl[i]
-        if t == nil then
-            return nil
-        elseif type(t[2]) == "table" then -- ほぼskk.hennkann.buf_reverseで使うための機能
-            if M.equal_to_any_element(t[2])(x) then
-                return t[1]
-            else
-                return f(i + 1)
-            end
-        elseif t[2] == x then
-            return t[1]
-        else
-            return f(i + 1)
-        end
-    end
-
-    return f(1)
-end end
-
 function M.filter(fn) return function(arg_tbl)
     local t = {}
     for i = 1, #arg_tbl do

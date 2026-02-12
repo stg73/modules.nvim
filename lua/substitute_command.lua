@@ -1,37 +1,18 @@
 local M = {}
 
-local function g() -- グローバルにするフラグを返す
-    return vim.o.gdefault and "" or "g"
-end
-
--- 置換する関数
-local function su(opts,tbl_tbl,bool)
-    local function s_single(tbl) -- 一文字置換する
-        vim.cmd("silent " .. opts.line1 .. "," .. opts.line2 .. [[substitute/\V]] .. vim.fn.escape(tbl[bool and 1 or 2],[[/\]]) .. "/" .. vim.fn.escape(tbl[bool and 2 or 1],[[/\]]) .. "/e" .. g())
-    end
-
-    for i in pairs(tbl_tbl) do
-        s_single(tbl_tbl[i])
+function M.get_command(tbl)
+    return function(range)
+        local substitute = require("regex").gsub(function(x) return tbl[x] end)(".")
+        local current_lines = vim.api.nvim_buf_get_lines(0,range[1] - 1,range[2],false)
+        local new_lines = require("tbl").map(substitute)(current_lines)
+        vim.api.nvim_buf_set_lines(0,range[1] - 1,range[2],false,new_lines)
     end
 end
 
--- 楽に定義するための関数
-function M.create(name) return function(tbl)
+function M.create_command(name) return function(tbl)
     vim.api.nvim_create_user_command(name,function(opts)
-        local x = vim.fn.getreg("/")
-        su(opts,tbl,true)
-        vim.fn.setreg("/",x)
-        vim.cmd.nohlsearch()
-    end,{range = true,bar = true})
-end end
-
-function M.create_reverse(name) return function(tbl)
-    vim.api.nvim_create_user_command(name,function(opts)
-        local x = vim.fn.getreg("/")
-        su(opts,tbl,false)
-        vim.fn.setreg("/",x)
-        vim.cmd.nohlsearch()
-    end,{range = true,bar = true})
+        M.get_command(tbl)({ opts.line1, opts.line2 })
+    end,{ range = true, bar = true })
 end end
 
 return M
