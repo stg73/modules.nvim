@@ -123,7 +123,7 @@ M.substituteと違い vim.fn.substituteが使われていない
 ]]
 function M.sub(sub) return function(pattern) return function(str)
     local t = {} -- strを分解・置換して格納する
-    local function f(str)
+    local function loop(str)
         local s,e = M.find(pattern)(str)
         if s and e then
             local matchd = string.sub(str,s,e)
@@ -138,14 +138,13 @@ function M.sub(sub) return function(pattern) return function(str)
                 table.insert(t,sub)
             end
 
-            return f(string.sub(str,e + 1))
+            return loop(string.sub(str,e + 1))
         else
             table.insert(t,str)
             return table.concat(t,"")
         end
     end
-
-    return f(str)
+    return loop(str)
 end end end
 
 return M

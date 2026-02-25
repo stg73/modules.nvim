@@ -139,19 +139,17 @@ G.annotation = regex.match(";@<=[^//]*")
 I.entry = regex.is("/S+ //.+//")
 
 -- 角括弧で示される候補の分類を取得
-function G.bunnrui(x)
-    if I.entry(x) then
-        return regex.match("(^/S+ .+;/[)@<=[^/]]+")(x)
-    else
-        return nil
-    end
-end
+G.bunnrui = regex.match("(^/S+ .+;/[)@<=[^/]]+")
 
 -- "skk-specialized"のシンタクスハイライトに使われている
 function G.bunnrui_from_table(exprs)
-    local bunnrui = tbl.match(G.bunnrui)(exprs)
-    if bunnrui then
-        return G.bunnrui(bunnrui)
+    local entry = tbl.match(function(expr)
+        if I.entry(expr) then
+            return G.bunnrui(expr)
+        end
+    end)(exprs)
+    if entry then
+        return G.bunnrui(entry)
     else
         return nil
     end

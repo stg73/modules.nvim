@@ -12,7 +12,6 @@ end end
 
 function M.to(base) return function(int)
     local int_tbl = {}
-
     local function loop(n)
         if n >= base then
             table.insert(int_tbl,n % base)
@@ -22,22 +21,20 @@ function M.to(base) return function(int)
         end
     end
     loop(int)
-
     return vim.iter(int_tbl):rev():totable()
 end end
 
-function M.align(len) return function(int_tbl)
-    local list = {}
-    local list_len = len - #int_tbl
+function M.align(len) return function(list)
+    local new_list = {}
+    local list_len = len - #list
     local function loop(i)
         if i < list_len then
-            table.insert(list,0)
+            table.insert(new_list,0)
             loop(i + 1)
         end
     end
     loop(0)
-
-    return vim.list_extend(list,int_tbl)
+    return vim.list_extend(new_list,list)
 end end
 
 return M

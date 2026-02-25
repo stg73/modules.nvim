@@ -33,7 +33,7 @@ function M.directory(d)
     -- vim.system のエラー出力用
     local on_exit = vim.schedule_wrap(function(job)
         if job.code ~= 0 then
-            error(str.remove.trailing_space(job.stderr))
+            error(vim.trim(job.stderr))
         end
     end)
 
