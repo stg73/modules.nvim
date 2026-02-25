@@ -891,17 +891,6 @@ tbl.pairs({fn})({tbl})                                           *tbl.pairs()*
     返り値: ~
         (`table`)
 
-tbl.map_reverse({fn_tbl})({x})                             *tbl.map_reverse()*
->lua
-    tbl.map_reverse(tbl)(x) == tbl.map(function(fn) return fn(x) end)(tbl)
-<
-    引数: ~
-      • {fn_tbl}  (`function[]`) 1変数関数のテーブル
-      • {x}       (`any`) 引数
-
-    返り値: ~
-        (`any[]`)
-
 tbl.match({pre})({tbl})                                          *tbl.match()*
     {tbl} の中から {pre} に合致するものを取得する
 

@@ -45,15 +45,6 @@ function M.pairs(fn) return function(arg_tbl)
     return t
 end end
 
--- M.mapの 関数と引数が逆
-function M.map_reverse(fn_tbl) return function(arg)
-    local t = {}
-    for i = 1, #fn_tbl do
-        table.insert(t,(fn_tbl[i])(arg))
-    end
-    return t
-end end
-
 -- シェルのパイプのように関数を繋げていく
 function M.pipe(tbl)
     local function loop(fn_idx,arg)
@@ -107,16 +98,6 @@ function M.curry(n) return function(fn)
         end
     end
     return loop({})
-end end
-
-function M.equal_to_any_element(cond) return function(x)
-    local function f(y) return y == x end
-    local match =  M.match(f)(cond)
-    if match then
-        return true
-    else
-        return false
-    end
 end end
 
 function M.range(s) return function(e)
