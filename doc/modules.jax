@@ -158,7 +158,6 @@ custom_url_scheme.add({tbl})                         *custom_url_scheme.add()*
 文字を置換するコマンドを作る                      *lua-lib-substitute_command*
 
 substitute_command.create_command({name})({tbl}) *substitute_command.create()*
-
     character_table を使って文字列を置換するユーザコマンドを作る
 
     例: >lua
@@ -778,12 +777,24 @@ string_utils.remove.trailing_space({str})
 いろいろ                                                         *lua-lib-tbl*
 
 テーブルという名前だが 雑多
+関数型プログラミング用のモジュールであり すべての関数は純粋
+たとえば |tbl.append()| は |table.insert()| と違い 引数のテーブルを変更せず
+新しいテーブルを返す
 
 tbl.compose({fn_tbl})                                          *tbl.compose()*
     関数合成する
 
+    例: >lua
+    tbl.compose({ tbl.get("fuga"), tbl.get("hoge") })({
+        hoge = {
+            fuga = "piyo",
+        },
+    })
+    -- "piyo"
+<
+
     引数: ~
-      • {fn_tbl}  (`function[]`)
+      • {fn_tbl}  (`function[]`) 合成する関数のリスト
 
     返り値: ~
         (`function`) 合成された関数
@@ -791,7 +802,8 @@ tbl.compose({fn_tbl})                                          *tbl.compose()*
 tbl.curry({n})({fn})                                             *tbl.curry()*
     関数をカリー化する
 >lua
-    tbl.curry(2)(table.concat)(tbl)(str) == table.concat(tbl,str)
+    tbl.curry(2)(table.concat)({ "hoge", "fuga" })(",")
+    -- "hoge,fuga"
 <
 
     引数: ~
@@ -822,6 +834,13 @@ tbl.flip({fn})                                                    *tbl.flip()*
 
 tbl.fold({fn})({tbl})                                             *tbl.fold()*
     fold
+
+    例: >lua
+    tbl.fold(function(x,y)
+        return x + y
+    end)({ 1, 2, 3 })
+    -- 6
+<
 
     引数: ~
       • {fn}   (`function`) 2変数関数
@@ -887,6 +906,18 @@ tbl.match({pre})({tbl})                                          *tbl.match()*
 tbl.pipe({tbl})                                                   *tbl.pipe()*
     シェルのパイプのように関数の返り値を繋いでいく
 
+    例: >lua
+    tbl.pipe({
+        tbl.range(0)(10),
+        tbl.filter(function(x)
+            return x % 2 == 0
+        end),
+        tbl.map(tbl.curry()(string.rep)(".")),
+        tbl.flip(tbl.curry()(table.concat))(","),
+    })
+    -- ",..,....,......,........,.........."
+<
+
     引数: ~
       • {tbl}  (`any[]`) 最初に元にする値 それ以降は関数
 
@@ -926,7 +957,6 @@ tbl.chunks({size})({tbl})                                       *tbl.chunks()*
 
 tbl.append({val})({list})                                       *tbl.append()*
     リストの最後に要素を追加する
-    |table.insert()| と違い テーブルを変更しない
 
     例: >lua
         tbl.append(1)({0})
