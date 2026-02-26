@@ -81,11 +81,13 @@ substitute_command.create()	modules.jax	/*substitute_command.create()*
 tbl.append()	modules.jax	/*tbl.append()*
 tbl.chunks()	modules.jax	/*tbl.chunks()*
 tbl.compose()	modules.jax	/*tbl.compose()*
+tbl.const()	modules.jax	/*tbl.const()*
 tbl.curry()	modules.jax	/*tbl.curry()*
 tbl.filter()	modules.jax	/*tbl.filter()*
 tbl.flip()	modules.jax	/*tbl.flip()*
 tbl.fold()	modules.jax	/*tbl.fold()*
 tbl.get()	modules.jax	/*tbl.get()*
+tbl.id()	modules.jax	/*tbl.id()*
 tbl.insert()	modules.jax	/*tbl.insert()*
 tbl.map()	modules.jax	/*tbl.map()*
 tbl.match()	modules.jax	/*tbl.match()*

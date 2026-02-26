@@ -153,4 +153,12 @@ end end end
 
 M.remove = M.flip(M.insert)()
 
+M.id = function(x)
+    return x
+end
+
+M.const = function(x) return function(_)
+    return x
+end end
+
 return M
