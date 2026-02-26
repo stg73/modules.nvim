@@ -91,9 +91,7 @@ function M.curry(n) return function(fn)
             return fn(unpack(args))
         else
             return function(arg)
-                local args = vim.deepcopy(args)
-                table.insert(args,arg)
-                return loop(args)
+                return loop(M.append(arg)(args))
             end
         end
     end
@@ -126,5 +124,33 @@ function M.chunks(size) return function(tbl)
     loop(1)
     return t
 end end
+
+local copy_table = function(tbl)
+    local new_tbl = {}
+    for k,v in pairs(tbl) do
+        new_tbl[k] = v
+    end
+    return new_tbl
+end
+
+function M.append(x) return function(list)
+    local new_list = copy_table(list)
+    table.insert(new_list,x)
+    return new_list
+end end
+
+function M.prepend(x) return function(list)
+    local new_list = { x }
+    vim.list_extend(new_list,list)
+    return new_list
+end end
+
+function M.insert(k) return function(v) return function(tbl)
+    local new_tbl = copy_table(tbl)
+    new_tbl[k] = v
+    return new_tbl
+end end end
+
+M.remove = M.flip(M.insert)()
 
 return M

@@ -924,6 +924,70 @@ tbl.chunks({size})({tbl})                                       *tbl.chunks()*
     返り値: ~
         (`any[][]`) {tbl} の最後の関数の返り値
 
+tbl.append({val})({list})                                       *tbl.append()*
+    リストの最後に要素を追加する
+    |table.insert()| と違い テーブルを変更しない
+
+    例: >lua
+        tbl.append(1)({0})
+        -- { 0, 1 }
+<
+
+    引数: ~
+      • {val}   (`any`) リストに追加する値
+      • {list}  (`any[]`) 対象のリスト
+
+    返り値: ~
+        (`any[]`) 新しいリスト
+
+tbl.prepend({val})({list})                                     *tbl.prepend()*
+    リストの最初に要素を追加する
+
+    例: >lua
+        tbl.prepend(1)({0})
+        -- { 1, 0 }
+<
+
+    引数: ~
+      • {val}   (`any`) リストに追加する値
+      • {list}  (`any[]`) 対象のリスト
+
+    返り値: ~
+        (`any[]`) 新しいリスト
+
+tbl.insert({key})({val})({tbl})                                 *tbl.insert()*
+    テーブルに要素を追加する
+
+    例: >lua
+        tbl.insert("hoge")("fuga")({})
+        -- {
+        --   hoge = "fuga"
+        -- }
+<
+
+    引数: ~
+      • {key}  (`any`) テーブルのキー
+      • {val}  (`any`) テーブルの値
+      • {tbl}  (`table`) 対象のテーブル
+
+    返り値: ~
+        (`table`) 新しいテーブル
+
+tbl.remove({key})({tbl})                                        *tbl.remove()*
+    テーブルの要素を削除
+
+    例: >lua
+        tbl.remove(1)({0})
+        -- {}
+<
+
+    引数: ~
+      • {key}  (`any`) テーブルから削除するキー
+      • {tbl}  (`table`) 対象のテーブル
+
+    返り値: ~
+        (`table`) 新しいテーブル
+
 ==============================================================================
 キーマップを取得する                                      *lua-lib-get_keymap*
 
