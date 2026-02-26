@@ -2,9 +2,9 @@ local M = {}
 
 function M.filter(fn) return function(arg_tbl)
     local t = {}
-    for i = 1, #arg_tbl do
-        if fn(arg_tbl[i]) then
-            table.insert(t,arg_tbl[i])
+    for _,v in pairs(arg_tbl) do
+        if fn(v) then
+            table.insert(t,v)
         end
     end
     return t
@@ -27,9 +27,8 @@ end end
 
 function M.map(fn) return function(arg_tbl)
     local t = {}
-    for i = 1, #arg_tbl do
-        local retval = fn(arg_tbl[i])
-        table.insert(t,retval)
+    for k,v in pairs(arg_tbl) do
+        t[k] = fn(v)
     end
     return t
 end end
