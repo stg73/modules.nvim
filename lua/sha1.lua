@@ -77,10 +77,13 @@ function M.sha1(msg)
 
     tbl.map(update_state)(tbl.chunks(64)(bytes))
 
-    return table.concat(tbl.map(function(H)
-        local big_endian = base.to(2 ^ 8)(H)
-        return table.concat(tbl.map(string.char)(big_endian))
-    end)(H))
+    return tbl.pipe {
+        H,
+        tbl.map(base.to(2 ^ 8)),
+        tbl.flatten(),
+        tbl.map(string.char),
+        table.concat,
+    }
 end
 
 return M

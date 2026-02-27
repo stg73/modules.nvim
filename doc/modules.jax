@@ -255,6 +255,37 @@ tbl.remove({key})({tbl})                                        *tbl.remove()*
     返り値: ~
         (`table`) 新しいテーブル
 
+tbl.flatten({depth})({list})                                   *tbl.flatten()*
+    リストを平坦化する
+
+    例: >lua
+        tbl.flatten(1)({ { 1, 2 }, { 3, { 4, 5 } } })
+        -- { 1, 2, 3, { 4, 5 } }
+        tbl.flatten(2)({ { 1, 2 }, { 3, { 4, 5 } } })
+        -- { 1, 2, 3, 4, 5 }
+<
+
+    引数: ~
+      • {depth}  (`integer?`, 既定: `1`) 平坦化する深さ
+      • {list}   (`any[]`)
+
+    返り値: ~
+        (`any[]`)
+
+tbl.reverse({list})                                            *tbl.reverse()*
+    リストを逆順にする
+
+    例: >lua
+        tbl.reverse({ 1, 2, 3 })
+        -- { 3, 2, 1 }
+<
+
+    引数: ~
+      • {list}  (`any[]`)
+
+    返り値: ~
+        (`any[]`)
+
 tbl.id({x})                                                         *tbl.id()*
     恒等関数
 

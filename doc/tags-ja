@@ -88,6 +88,7 @@ tbl.const()	modules.jax	/*tbl.const()*
 tbl.curry()	modules.jax	/*tbl.curry()*
 tbl.default()	modules.jax	/*tbl.default()*
 tbl.filter()	modules.jax	/*tbl.filter()*
+tbl.flatten()	modules.jax	/*tbl.flatten()*
 tbl.flip()	modules.jax	/*tbl.flip()*
 tbl.fold()	modules.jax	/*tbl.fold()*
 tbl.get()	modules.jax	/*tbl.get()*
@@ -100,4 +101,5 @@ tbl.pipe()	modules.jax	/*tbl.pipe()*
 tbl.prepend()	modules.jax	/*tbl.prepend()*
 tbl.range()	modules.jax	/*tbl.range()*
 tbl.remove()	modules.jax	/*tbl.remove()*
+tbl.reverse()	modules.jax	/*tbl.reverse()*
 vim.keymap.get()	modules.jax	/*vim.keymap.get()*

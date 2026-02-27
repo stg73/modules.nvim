@@ -152,6 +152,34 @@ end end end
 
 M.remove = M.flip(M.insert)()
 
+M.flatten = function(depth) return function(list)
+    depth = depth or 1
+    local new_list = {}
+    local function flatten(depth,list)
+        for _,v in pairs(list) do
+            if (type(v) == "table") and depth >= 1 then
+                flatten(depth - 1,v)
+            else
+                table.insert(new_list,v)
+            end
+        end
+    end
+    flatten(depth,list)
+    return new_list
+end end
+
+M.reverse = function(list)
+    local new_list = {}
+    local function loop(i)
+        if i >= 1 then
+            table.insert(new_list,list[i])
+            return loop(i - 1)
+        end
+    end
+    loop(#list)
+    return new_list
+end
+
 M.id = function(x)
     return x
 end
