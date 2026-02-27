@@ -34,7 +34,13 @@ function M._build_cmd_args(opts)
 end
 
 M._sub_cmd_handler = {
-    keyword = t.flip(t.curry()(table.concat))(" "),
+    keyword = function(x)
+        if type(x) == "table" then
+            return table.concat(x," ")
+        else
+            return x
+        end
+    end,
     match = pattern,
     region = function() end,
 }
