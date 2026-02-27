@@ -1,5 +1,7 @@
 local M = {}
 
+local tbl = require("tbl")
+
 function M.from(base) return function(int_tbl)
     local function sum(i,n)
         if not int_tbl[i] then
@@ -15,7 +17,7 @@ function M.to(base) return function(int)
     local function loop(n)
         if n >= base then
             table.insert(int_tbl,n % base)
-            loop(math.floor(n / base))
+            return loop(math.floor(n / base))
         else
             table.insert(int_tbl,n)
         end
@@ -25,15 +27,7 @@ function M.to(base) return function(int)
 end end
 
 function M.align(len) return function(list)
-    local new_list = {}
-    local list_len = len - #list
-    local function loop(i)
-        if i < list_len then
-            table.insert(new_list,0)
-            loop(i + 1)
-        end
-    end
-    loop(0)
+    local new_list = tbl.map(tbl.const(0))(tbl.range(1)(len - #list))
     return vim.list_extend(new_list,list)
 end end
 

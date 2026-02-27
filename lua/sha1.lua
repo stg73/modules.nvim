@@ -12,7 +12,7 @@ function M.sha1(msg)
     local non_zero_bytes = #bytes + 8
     local current_mod = non_zero_bytes % 64
     if current_mod ~= 0 then
-        local second_append = tbl.map(function() return 0x00 end)(tbl.range(1)(64 - current_mod))
+        local second_append = tbl.map(tbl.const(0x00))(tbl.range(1)(64 - current_mod))
         vim.list_extend(bytes,second_append)
     end
     local msg_bit_len = string.len(msg) * 8
