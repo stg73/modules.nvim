@@ -16,12 +16,12 @@ end
 function M._build_cmd_args(opts)
     local args = {}
     for k,v in pairs(opts) do
-        local arg = k .. (function()
+        local arg = (function()
             local val_type = type(v)
             if val_type == "table" then
-                return "=" .. filter(k)(table.concat(v,","))
+                return k .. "=" .. filter(k)(table.concat(v,","))
             elseif val_type == "string" then
-                return "=" .. filter(k)(v)
+                return k .. "=" .. filter(k)(v)
             elseif val_type == "boolean" then
                 if v then
                     return k
@@ -55,7 +55,7 @@ function M.syntax(higroup) return function(opts)
 end end
 
 function M.link(higroup1) return function(higroup2)
-    vim.api.nvim_set_hl(0,higroup1,{ link = hiroup2 })
+    vim.api.nvim_set_hl(0,higroup1,{ link = higroup2 })
 end end
 
 return M
