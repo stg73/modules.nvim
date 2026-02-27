@@ -160,4 +160,12 @@ M.const = function(x) return function(_)
     return x
 end end
 
+M.default = function(default) return function(x)
+    if x == nil then
+        return default
+    else
+        return x
+    end
+end end
+
 return M

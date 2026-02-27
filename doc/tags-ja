@@ -83,6 +83,7 @@ tbl.chunks()	modules.jax	/*tbl.chunks()*
 tbl.compose()	modules.jax	/*tbl.compose()*
 tbl.const()	modules.jax	/*tbl.const()*
 tbl.curry()	modules.jax	/*tbl.curry()*
+tbl.default()	modules.jax	/*tbl.default()*
 tbl.filter()	modules.jax	/*tbl.filter()*
 tbl.flip()	modules.jax	/*tbl.flip()*
 tbl.fold()	modules.jax	/*tbl.fold()*

@@ -1047,6 +1047,24 @@ tbl.const({x})({_})                                              *tbl.const()*
     返り値: ~
         (`any`) {x}
 
+tbl.default({default})({x})                                      *tbl.default()*
+    既定値を設定する
+    {x} が `nil` であれば {default} を そうでなければ {x} を返す
+
+    例: >lua
+        tbl.default(1)(nil)
+        -- 1
+        tbl.default(1)(2)
+        -- 2
+<
+
+    引数: ~
+      • {default}  (`any`) 既定値
+      • {x}        (`any`)
+
+    返り値: ~
+        (`any`) {x} もしくは {default}
+
 ==============================================================================
 キーマップを取得する                                      *lua-lib-get_keymap*
 
