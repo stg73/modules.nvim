@@ -11,769 +11,6 @@ neovim用のluaモジュール群
 |get_keymap.get()| 以外の全ての関数はカリー化されている
 
 ==============================================================================
-文字列と文字列の対応                                 *lua-lib-character_table*
-
-半角と全角、ローマ字と平仮名、など文字列の対応を集めたもの
-例えば `{ あ = "ア", い = "イ" }` のようなもの
-
-character_table.Seionn_Dakuonn                *character_table.Seionn_Dakuonn*
-    清音と濁音
-
-character_table.Itijuusenn_Nijuusenn    *character_table.Itijuusenn_Nijuusenn*
-    罫線素片の一重線と二重線
-
-character_table.Hannkaku_Zennkaku          *character_table.Hannkaku_Zennkaku*
-    半角と全角
-
-character_table.Romaji_Hiragana              *character_table.Romaji_Hiragana*
-    ローマ字と平仮名
-
-character_table.Hososenn_Hutosenn          *character_table.Hososenn_Hutosenn*
-    罫線素片の細線と太線
-
-character_table.Kadokaku_Kadomaru          *character_table.Kadokaku_Kadomaru*
-    罫線素片の鉤括弧のようなものと角丸
-    "Kadokaku"は造語
-
-character_table.Hiragana_Katakana          *character_table.Hiragana_Katakana*
-    平仮名と片仮名
-
-==============================================================================
-進法を変換する                                          *lua-lib-convert_base*
-
-進法を変換する
-
-from({base})({list})                                     *convert_base.from()*
-    数列 {list} を {base} 進法とみなした数を取得する
-
-    例: >lua
-        convert_base.from(2)({1,0})
-        -- 2
-
-        convert_base.from(2)({1,1,1})
-        -- 7
-
-        -- 文字列を16進法で解釈する
-        convert_base.from(16)(tbl.map(function(x)
-            return ({
-                ["0"] = 0,
-                ["1"] = 1,
-                ["2"] = 2
-                ["3"] = 3,
-                ["4"] = 4,
-                ["5"] = 5,
-                ["6"] = 6,
-                ["7"] = 7,
-                ["8"] = 8,
-                ["9"] = 9,
-                A = 10,
-                B = 11,
-                C = 12,
-                D = 13,
-                E = 14,
-                F = 15,
-            })[x]
-        end)(vim.split("ABCD",""))) == 0xABCD
-        -- true
-<
-
-    引数: ~
-        {base}  (`number`) 進法
-        {list}  (`number[]`) 数列
-
-    返り値: ~
-        (`number`) 数
-        |convert_base.to()| の {num}
-
-to({base})({num})                                          *convert_base.to()*
-    {int} を {base} 進法で表現した数列を取得する
-
-    例: >lua
-        convert_base.to(2)(2)
-        -- { 1, 0 }
-
-        convert_base.to(2)(7)
-        -- { 1, 1, 1 }
-<
-
-    引数: ~
-        {base}  (`number`) 進法
-        {num}   (`number`) 数
-
-    返り値: ~
-        (`number[]`) 数列
-        |convert_base.from()| の {list}
-
-align({len})({list})                                    *convert_base.align()*
-    10 を 0010 にするようなもの
-
-    例: >lua
-        convert_base.align(4)({1,0})
-        -- { 0, 0, 1, 0 }
-
-        convert_base.align(7)({1,1,1})
-        -- { 0, 0, 0, 0, 1, 1, 1 }
-<
-
-    引数: ~
-        {len}   (`integer`) リストの長さ
-        {list}  (`number[]`) 数列
-
-    返り値: ~
-        (`number[]`) 変換結果
-
-==============================================================================
-カスタムURLスキームを作る                          *lua-lib-custom_url_scheme*
-
-カスタムURLスキームを作ってneovim内で使えるようにする
-`init()` でスキームを扱うautocmdを作り `add()` でスキームの定義をする
-
-例: >lua
-    custom_url_scheme.init()
-    custom_url_scheme.add({
-        https = open_webpage.open,
-        http = open_webpage.open,
-        github = open_github.open,
-    })
-<
-    上を実行後に `https://example.com` というバッファを開くと
->lua
-    open_webpage.open("example.com")
-<
-    が実行され https://example.com が閲覧できる
-
-custom_url_scheme.schemes                        *custom_url_scheme.schemes()*
-    スキームの定義
-
-custom_url_scheme.init()                            *custom_url_scheme.init()*
-    オートコマンドの作成
-
-custom_url_scheme.add({tbl})                         *custom_url_scheme.add()*
-    スキームと実行する関数を設定する
-
-    引数: ~
-      • {tbl}  (`table`) キーがスキーム 値が実行される関数
-
-==============================================================================
-文字を置換するコマンドを作る                      *lua-lib-substitute_command*
-
-substitute_command.create_command({name})({tbl}) *substitute_command.create()*
-    character_table を使って文字列を置換するユーザコマンドを作る
-
-    例: >lua
-        local s = require("substitute_command")
-        local c = require("character_table")
-
-        s.create_command("Katakana")(c.Hiragana_Katakana)
-        s.create_command("Hiragana")(tbl.pairs(vim.fn.reverse)(c.Hiragana_Katakana))
-<
-    上では指定した範囲の平仮名を片仮名にするコマンド"Katakana"と
-    片仮名を平仮名にするコマンド"Hiragana"を作っている
-
-    引数: ~
-      • {name}  (`string`) 作るコマンドの名前
-      • {tbl}   (`table`) |lua-lib-character_table| の形式
-
-==============================================================================
-githubのファイルを閲覧                                   *lua-lib-open_github*
-
-githubからファイルをダウンロードして閲覧する open_webpageのラッパー
-
-open_github.get_from_table({tbl})               *open_github.get_from_table()*
-    テーブルを渡す
-
-    例: >lua
-        open_github.get_from_table({
-            repo = "stg73/modules.nvim",
-            commit = "main",
-            file = "readme.txt"
-        })
-<
-
-    引数: ~
-      • {tbl}  (`table`) 以下を含む
-               • {repo} (`string`) リポジトリの名前
-               • {commit}? (`string`) ブランチ コミット タグ
-               • {file} (`string`) ファイルパス
-
-    返り値: ~
-        (`string`) |open_webpage.open()| に渡す文字列
-
-open_github.get_from_string(({str})            *open_github.get_from_string()*
-    {str} のBNF
->
-        <str> ::= <repo> "\" <commit> path | <repo> path
-        <repo> ::= user "/" repo "/"
-        <commit> ::= "b" branch | "c" commit | "t" tag
-<
-    ブランチ コミットID タグ が指定できる
-    例: >
-        "neovim/neovim/\bmaster/README.md"
-        "neovim/neovim/\tv0.11.5/README.md"
-        "neovim/neovim/\cb80d390/README.md"
-        "neovim/neovim/README.md"
-<
->lua
-        open_github.get_from_string("stg73/modules.nvim/\\bmain/readme.txt")
-        -- "github.com/stg73/modules.nvim/raw/refs/heads/main/readme.txt"
-<
-
-    引数: ~
-      • {str}  (`string`) URLっぽい文字列
-
-    返り値: ~
-        (`string`) |open_webpage.open()| に渡す文字列
-
-open_github.open({tbl_or_str})                            *open_github.open()*
-    引数がテーブルであれば |open_github.get_from_table()|
-    文字列であれば |open_github.get_from_string()| に渡し
-    返り値を |open_webpage.open()| に渡す
-    成功すると `b:github` にgithubのウェブUIで見る用のURLを代入する
->lua
-        -- このhelpを見る
-        open_github.open("stg73/modules.nvim/doc/modules.jax")
-        -- webuiで見る
-        vim.ui.open("https://" .. vim.b.github)
-<
-
-    引数: ~
-      • {tbl_or_str}  (`string|table`) URLっぽい文字列 もしくは テーブル
-
-==============================================================================
-ウェブページを閲覧する                                  *lua-lib-open_webpage*
-
-ウェブページをダウンロードしてneovimで閲覧する
-`curl` が必要
-
-open_webpage.open({str})                                 *open_webpage.open()*
-    ウェブページを閲覧する
-    パスを元にファイルタイプをセットする
-    https://example.com を閲覧するには
->lua
-        open_webpage.open("example.com")
-<
-
-    引数: ~
-      • {str}  (`string`) URLの"https?://"を除いた部分
-
-    返り値: ~
-        (`table`) `vim.system():wait()` と同じ
-
-==============================================================================
-関数を遅延して呼び出す                                     *lua-lib-lazy_call*
-
-lazy_call.lazy({opt})({callback})                           *lazy_call.lazy()*
-    指定した条件のときに関数を1度だけ実行する
-
-    例: >lua
-        -- "h" を入力したら "hoge" を表示する
-        lazy_call.lazy({
-            keys = {
-                { "n", "h" },
-            },
-        })(function()
-            print("hoge")
-        end)
-<
-    引数: ~
-      • {opt}       (`table`) 条件
-                    • {event}? (`string`) そのイベントがトリガーされたとき
-                    • {pattern}? (`string`) {event} と併用する
-                      オートコマンドのパターン
-                    • {keys}? (`[string|string[], string|string[]][]`)
-                      |vim.keymap.set()| の {modes} と、 {lhs} のリスト、の組
-                      のリスト
-                    • {command}? (`string`) そのコマンドを実行したとき
-      • {callback}  (`function`) 呼び出す関数
-
-==============================================================================
-パッケージマネージャー                               *lua-lib-package_manager*
-
-パッケージマネージャー
-使用例:
-https://github.com/stg73/config.nvim/blob/main/lua/packages.lua
-
-package_manager.directory({dir})                 *package_manager.directory()*
-    パッケージを管理するディレクトリを設定する
-
-    引数: ~
-        {dir}  (`string`) ディレクトリのフルパス
-
-    返り値: ~
-        (`table`) 以下を含むテーブル
-
-load({name})                              *package_manager.directory().load()*
-    {name} のパッケージを ロードする
-
-    引数: ~
-      • {name}  (`string`) パッケージの名前
-
-load_opt({opt})({name})               *package_manager.directory().load_opt()*
-    {name} のパッケージを {opt} のタイミングで ロードする
-
-    引数: ~
-      • {opt}   (`table`) オプション
-               • {lazy}? (`table`) 指定された場合は遅延読み込みする
-                 |lazy_call.lazy()| の {opt} と同じ
-               • {setup}? (`string`) すぐに実行される
-               • {hook_pre}? (`string`) ロードされる前に実行される
-               • {hook_post}) ロードされた後に実行される
-      • {name}  (`string`) パッケージの名前
-
-load_table({opts})                 *package_manager.directory().load_table()*
-    `load_opt()` の {opts} を含むテーブルをとる
-    テーブルのキーが `load_opt()` の {name} として使用される
-
-    例: >lua
-        p = package_manager.directory("c:/users/user/package")
-        p.load_table({
-            ["vimdoc-ja"] = { event = "CmdLineEnter" },
-            ["jumpcursor.vim"] = {
-                lazy = {
-                    keys = {
-                        { "n", "<Plug>(jumpcursor-jump)", }
-                    },
-                },
-                setup = function()
-                    vim.keymap.set('n','<leader>j','<Plug>(jumpcursor-jump)')
-                end,
-            },
-        })
-<
-    引数: ~
-      • {opts}  (`table`)
-
-loaded                                    *package_manager.directory().loaded*
-    読み込まれたプラグイン
-
-installed                              *package_manager.directory().installed*
-    インストールされているパッケージ
-
-install({name})({pkg})                 *package_manager.directory().install()*
-    {name} という名前で {pkg} をインストールする
-    {name} が文字列でなれれば {pkg} から決定される
-
-    引数: ~
-      • {name}  (`string`) パッケージの名前
-
-install_table({pkgs})            *package_manager.directory().install_table()*
-    {pkg} を含むテーブルをとる
-    テーブルのキーが `install()` の {name} として使用される
-
-    例: >lua
-        local p = package_manager.directory("/packages/directory")
-        p.install_table({
-            { repo = "stg73/modules.nvim", branch = "main" },
-            hoge = { repo = "https://example.com/hoge.git", tag = "v0.0.1" },
-            fuga = "https://example.com/fuga.git",
-        })
-<
-    引数: ~
-      • {pkgs}  (`table`) パッケージのテーブル
-        キーが文字列の場合その名前でインストールする
-
-is_installed({pkg})               *package_manager.directory().is_installed()*
-    {pkg} がインストールされているかを返す
-
-    引数: ~
-      • {pkg}  (`table`)
-
-    返り値: ~
-        (`boolean`)
-
-uninstall({name})                    *package_manager.directory().uninstall()*
-    {name} のパッケージをアンインストールする
-
-    引数: ~
-      • {name} (`string`) パッケージの名前
-
-update({name})                          *package_manager.directory().update()*
-    {name} のパッケージをアップデートする
-
-    引数: ~
-      • {name} (`string`) パッケージの名前
-
-==============================================================================
-正規表現                                                       *lua-lib-regex*
-
-vimの正規表現を使って文字列を操作する
-バックスラッシュの代わりにスラッシュを使う
-
-regex.convert({str})                                         *regex.convert()*
-    スラッシュを使った正規表現をvimの正規表現に変換
-
-    例: >lua
-    regex.convert("/s")
-    -- "\\s"
-<
-
-    引数: ~
-      • {str}  (`string`)
-
-    返り値: ~
-        (`string`) vimの正規表現
-
-regex.escape({str})                                           *regex.escape()*
-    スラッシュをエスケープ文字として扱わないようにエスケープする
-
-    例: >lua
-    regex.escape("/s")
-    -- "//s"
-<
-
-    引数: ~
-      • {str}  (`string`)
-
-    返り値: ~
-        (`string`) エスケープされた文字列
-
-regex.find({pattern})({str})                                    *regex.find()*
-    |vim.regex| のラッパー
-    |string.find()| の |vim.regex| 版
-    |string.sub()| で使いやすいようにインデックスも変更
-
-    例: >lua
-    regex.find("/d")("a2c")
-    -- 2
-    -- 2
-<
-
-    引数: ~
-      • {pattern}  (`string`)
-      • {str}      (`string`)
-
-    返り値 (複数): ~
-        (`integer?`) 開始
-        (`integer?`) 終端
-
-regex.match({pattern})({str})                                  *regex.match()*
-    |string.match()| の |vim.regex| 版
-
-    例: >lua
-    regex.match("/d")("a2c")
-    -- "2"
-<
-
-    引数: ~
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 文字列
-
-    返り値: ~
-        (`string?`) パターンに一致した部分文字列
-
-regex.has({pattern})({str})                                      *regex.has()*
-    パターンが含まれているかどうか
-
-    例: >lua
-    regex.has("/d")("a2c")
-    -- true
-<
-
-    引数: ~
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 一致した文字列
-
-    返り値: ~
-        (`boolean`)
-
-regex.is({pattern})({str})                                        *regex.is()*
-    パターンに完全一致するか
-    |regex.has()| のラッパー
-
-    例: >lua
-    regex.is("/d")("a2c")
-    -- false
-<
-
-    引数: ~
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 文字列
-
-    返り値: ~
-        (`boolean`)
-
-regex.substitute({sub})({pattern})({str})                 *regex.substitute()*
-    |substitute()| のラッパー
-    subの関数にはテーブルが渡される
-
-    引数: ~
-      • {sub}      (`string|function`) 文字列であればそれで置換する
-                   関数であればその返り値で置換する
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 文字列
-
-    返り値: ~
-        (`string`) 置換した文字列
-
-regex.gsub({sub})({pattern})({str})                             *regex.gsub()*
-    |string.gsub()| のvim regex版
-    |substitute()| のラッパー
-    {sub} の関数には文字列が渡される
-
-    例: >lua
-    regex.gsub(":")("/d")("a2c")
-    -- "a:c"
-<
-
-    引数: ~
-      • {sub}      (`string|function`) 文字列であればそれで置換する
-                   関数であればその返り値で置換する
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 文字列
-
-    返り値: ~
-        (`string`) 置換した文字列
-
-regex.remove({pattern})({str})                                *regex.remove()*
-    |regex.gsub()| のラッパー
-    {str} から {pattern} を削除する
-
-    例: >lua
-    regex.remove = regex.gsub("")
-
-    regex.remove("/d")("a2c")
-    -- "ac"
-<
-
-    引数: ~
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 文字列
-
-    返り値: ~
-        (`string`) {str} から {pattern} を削除した文字列
-
-regex.filter({cond})({str})                                   *regex.filter()*
-    文字か関数で文字列をフィルターする
-
-    例: >lua
-    regex.filter("0-9")("a2c")
-    -- "2"
-<
-
-    引数: ~
-      • {cond}  (`string|function`) フィルターする条件
-                文字列であればそれに一致するかでフィルターする
-                関数であればその返り値でフィルターする
-      • {str}   (`string`) パターン
-
-    返り値: ~
-        (`string`) フィルターされた文字列
-
-regex.gmatch({pattern})({str})                                *regex.gmatch()*
-    {str} を {pattern} にマッチする部分に分解する
-
-    例: >lua
-    regex.gmatch("[0-9]")("a2c")
-    -- { "2" }
-<
-
-    引数: ~
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 文字列
-
-    返り値: ~
-        (`string[]`) {str} を分解したテーブル
-
-regex.split({delimiter})({str})                                  *regex.split()*
-    文字列を特定の文字で分割する
-    |regex.gamtch()| のラッパー
-
-    引数: ~
-      • {delimiter}  (`string`) 区切る文字
-      • {str}        (`string`) 文字列
-
-    返り値: ~
-        (`string[]`) {str} を分解したテーブル
-
-regex.concat({delimiter})({str1})({str2})                     *regex.concat()*
-    |vim.fs.joinpath()| を一般化したようなもの
-
-    返り値: ~
-        (`string`) {str1} と {str2} を {delimiter} で結合したもの
-
-regex.sub({sub})({pattern})({str})                               *regex.sub()*
-    |string.gsub()| の |vim.regex| 版
-    |regex.gsub()| と違い |substitute()| が使われていない
-    非推奨
-        |regex.gsub()| より遅い
-        |regex.gsub()| と違い"\1"系が使えない
-        マッチした部分を削除して再帰しているため ".@<=."のように後読みする場合
-        |regex.gsub()| と挙動が異なる
->lua
-            regex.gsub(":")(".@<=.")("123")
-            -- "1::"
-            regex.sub(":")(".@<=.")("123")
-            -- "1:3"
-<
-
-    引数: ~
-      • {sub}      (`string|function`) 文字列であればそれで置換する
-                   関数であればその返り値で置換する
-      • {pattern}  (`string`) パターン
-      • {str}      (`string`) 文字列
-
-    返り値: ~
-        (`string`) 置換された文字列
-
-==============================================================================
-ローマ字を扱う                                                *lua-lib-romaji*
-
-ローマ字と仮名の `regex` で使うためのパターンを提供する
-
-romaji.romaji                                                  *romaji.romaji*
-    ローマ字のパターン 促音は";"
-
-    ローマ字を平仮名に変換する関数は
->lua
-    regex.gsub(function(x)
-        return character_table.Romaji_Hiragana[x]
-    end))(romaji.romaji)
-<
-
-romaji.romaji_rennzoku                                *romaji.romaji_rennzoku*
-    ローマ字のパターン 促音は子音の連続 "tta" など
-
-romaji.kana                                                      *romaji.kana*
-    平仮名のパターン
-
-==============================================================================
-SHA1でハッシュ化する                                            *lua-lib-sha1*
-
-sha1.sha1({msg})                                                 *sha1.sha1()*
-    SHA1でハッシュ化する
-
-    引数: ~
-      • {msg}  (`string`)
-
-    返り値: ~
-        (`string`)
-
-==============================================================================
-SKKを解析する                                                    *lua-lib-skk*
-
-構文解析したり バッファからSKKを読み込んで変換をしたりする
-
-------------------------------------------------------------------------------
-SKKを構文解析する                                                  *skk.parse*
-
-skk.parse.line({str})                                       *skk.parse.line()*
-    一行のSKKを構文解析する
-
-    引数: ~
-      • {str}  (`string`) 一行のSKK
-
-    返り値: ~
-        (`table`) 構文解析した結果
-
-------------------------------------------------------------------------------
-SKK辞書を使い文字列の変換をする                                 *skk.hennkann*
-
-skk.hennkann.fn.buf({buf})({midasi})                   *skk.hennkann.fn.buf()*
-    {buf} のバッファからSKKを読み込んで {midasi} を変換する
-    複数の候補のテーブルを返す
-
-    引数: ~
-      • {buf}     (`integer`) バッファ番号
-      • {midasi}  (`string`) 見出し
-
-    返り値: ~
-        (`string[]`) 複数の候補
-
-skk.hennkann.fn.buf_reverse({buf})({kouho})    *skk.hennkann.fn.buf_reverse()*
-    {buf} のバッファからSKKを読み込んで {kouho} を変換する
-    一つの見出しの文字列を返す
-
-    引数: ~
-      • {buf}    (`integer`) バッファ番号
-      • {kouho}  (`string`) 候補
-
-    返り値: ~
-        (`string?`) 見出し
-
-------------------------------------------------------------------------------
-SKK辞書を編集する                                                *skk.command*
-
-SKKを編集するためのコマンド
-`vim.api.nvim_create_user_command` の引数として与える関数を提供する
-
-skk.command.annotate({opts})                          *skk.command.annotate()*
-    任意の範囲に分類注釈を追加するコマンド
-
-    例: >lua
-        vim.api.nvim_create_user_command("SkkAnnotate",
-        skk.command.annotate,
-        {bar = true,range = "%"})
-<
-
-    引数: ~
-      • {opts}  (`table`)
-
-==============================================================================
-文字列を楽に扱う                                        *lua-lib-string_utils*
-
-文字列を操作するためのユーティリティ
-
-------------------------------------------------------------------------------
-文字列からなんらかの要素を取得する                          *string_utils.get*
-
-string_utils.get.original_name_of_backup_file({path})
-                             *string_utils.get.original_name_of_backup_file()*
-    拡張子を付け足すタイプのバックアップファイル名から元のファイル名を取得
-    "hoge.txt.hoge" -> "hoge.txt"
-    "hoge.txt.20251027T124207Z.hoge" -> "hoge.txt"
-
-    例: バックアップファイルのファイルタイプをセットする >lua
-    vim.filetype.add({
-        extension = {
-            bak = function(path,bufnr)
-                return vim.filetype.match({
-                    filename = string_utils.get.original_name_of_backup_file(path),
-                    buf = bufnr,
-                })
-            end
-        }
-    })
-<
-    引数: ~
-      • {path}  (`string`) ファイルパス
-
-    返り値: ~
-        (`string`) 元のファイル名
-
-string_utils.get.path_of_url({url})           *string_utils.get.path_of_url()*
-    URLからパスを取得する
-    |open_webpage.open()| で使われている
-
-    引数: ~
-      • {url}  (`string`) URL
-
-    返り値: ~
-        (`string`) パス
-
-------------------------------------------------------------------------------
-文字列を削除する                                         *string_utils.remove*
-
-string_utils.remove.ansi_escape_code({str})
-                                      *string_utils.remove.ansi_escape_code()*
-    ANSI escape codeを削除する
-
-    引数: ~
-      • {str}  (`string`)
-
-    返り値: ~
-        (`string`) エスケープコードを削除した文字列
-
-string_utils.remove.trailing_space({str})
-                                        *string_utils.remove.trailing_space()*
-行の末尾の空白や末尾の空行を削除する
-
-    引数: ~
-      • {str}  (`string`)
-
-    返り値: ~
-        (`string`)
-
-==============================================================================
 いろいろ                                                         *lua-lib-tbl*
 
 テーブルという名前だが 雑多
@@ -1063,7 +300,91 @@ tbl.default({default})({x})                                      *tbl.default()*
       • {x}        (`any`)
 
     返り値: ~
-        (`any`) {x} もしくは {default}
+        (`any`) {x}  {default}
+
+==============================================================================
+進法を変換する                                          *lua-lib-convert_base*
+
+進法を変換する
+
+from({base})({list})                                     *convert_base.from()*
+    数列 {list} を {base} 進法とみなした数を取得する
+
+    例: >lua
+        convert_base.from(2)({1,0})
+        -- 2
+
+        convert_base.from(2)({1,1,1})
+        -- 7
+
+        -- 文字列を16進法で解釈する
+        convert_base.from(16)(tbl.map(function(x)
+            return ({
+                ["0"] = 0,
+                ["1"] = 1,
+                ["2"] = 2
+                ["3"] = 3,
+                ["4"] = 4,
+                ["5"] = 5,
+                ["6"] = 6,
+                ["7"] = 7,
+                ["8"] = 8,
+                ["9"] = 9,
+                A = 10,
+                B = 11,
+                C = 12,
+                D = 13,
+                E = 14,
+                F = 15,
+            })[x]
+        end)(vim.split("ABCD",""))) == 0xABCD
+        -- true
+<
+
+    引数: ~
+        {base}  (`number`) 進法
+        {list}  (`number[]`) 数列
+
+    返り値: ~
+        (`number`) 数
+        |convert_base.to()| の {num}
+
+to({base})({num})                                          *convert_base.to()*
+    {int} を {base} 進法で表現した数列を取得する
+
+    例: >lua
+        convert_base.to(2)(2)
+        -- { 1, 0 }
+
+        convert_base.to(2)(7)
+        -- { 1, 1, 1 }
+<
+
+    引数: ~
+        {base}  (`number`) 進法
+        {num}   (`number`) 数
+
+    返り値: ~
+        (`number[]`) 数列
+        |convert_base.from()| の {list}
+
+align({len})({list})                                    *convert_base.align()*
+    10 を 0010 にするようなもの
+
+    例: >lua
+        convert_base.align(4)({1,0})
+        -- { 0, 0, 1, 0 }
+
+        convert_base.align(7)({1,1,1})
+        -- { 0, 0, 0, 0, 1, 1, 1 }
+<
+
+    引数: ~
+        {len}   (`integer`) リストの長さ
+        {list}  (`number[]`) 数列
+
+    返り値: ~
+        (`number[]`) 変換結果
 
 ==============================================================================
 syntaxのラッパー                                              *lua-lib-syntax*
@@ -1109,6 +430,686 @@ syntax.link({higroup1})({higroup2})                            *syntax.link()*
     引数: ~
       • {higroup1}  (`string`) ハイライトグループ
       • {higroup2}  (`string`) ハイライトグループ
+
+==============================================================================
+文字列と文字列の対応                                 *lua-lib-character_table*
+
+半角と全角、ローマ字と平仮名、など文字列の対応を集めたもの
+例えば `{ あ = "ア", い = "イ" }` のようなもの
+
+character_table.Seionn_Dakuonn                *character_table.Seionn_Dakuonn*
+    清音と濁音
+
+character_table.Itijuusenn_Nijuusenn    *character_table.Itijuusenn_Nijuusenn*
+    罫線素片の一重線と二重線
+
+character_table.Hannkaku_Zennkaku          *character_table.Hannkaku_Zennkaku*
+    半角と全角
+
+character_table.Romaji_Hiragana              *character_table.Romaji_Hiragana*
+    ローマ字と平仮名
+
+character_table.Hososenn_Hutosenn          *character_table.Hososenn_Hutosenn*
+    罫線素片の細線と太線
+
+character_table.Kadokaku_Kadomaru          *character_table.Kadokaku_Kadomaru*
+    罫線素片の鉤括弧のようなものと角丸
+    "Kadokaku"は造語
+
+character_table.Hiragana_Katakana          *character_table.Hiragana_Katakana*
+    平仮名と片仮名
+
+==============================================================================
+文字を置換するコマンドを作る                      *lua-lib-substitute_command*
+
+substitute_command.create_command({name})({tbl}) *substitute_command.create()*
+    character_table を使って文字列を置換するユーザコマンドを作る
+
+    例: >lua
+        local s = require("substitute_command")
+        local c = require("character_table")
+
+        s.create_command("Katakana")(c.Hiragana_Katakana)
+        s.create_command("Hiragana")(tbl.pairs(vim.fn.reverse)(c.Hiragana_Katakana))
+<
+    上では指定した範囲の平仮名を片仮名にするコマンド"Katakana"と
+    片仮名を平仮名にするコマンド"Hiragana"を作っている
+
+    引数: ~
+      • {name}  (`string`) 作るコマンドの名前
+      • {tbl}   (`table`) |lua-lib-character_table| の形式
+
+==============================================================================
+正規表現                                                       *lua-lib-regex*
+
+vimの正規表現を使って文字列を操作する
+バックスラッシュの代わりにスラッシュを使う
+
+regex.convert({str})                                         *regex.convert()*
+    スラッシュを使った正規表現をvimの正規表現に変換
+
+    例: >lua
+    regex.convert("/s")
+    -- "\\s"
+<
+
+    引数: ~
+      • {str}  (`string`)
+
+    返り値: ~
+        (`string`) vimの正規表現
+
+regex.escape({str})                                           *regex.escape()*
+    スラッシュをエスケープ文字として扱わないようにエスケープする
+
+    例: >lua
+    regex.escape("/s")
+    -- "//s"
+<
+
+    引数: ~
+      • {str}  (`string`)
+
+    返り値: ~
+        (`string`) エスケープされた文字列
+
+regex.find({pattern})({str})                                    *regex.find()*
+    |vim.regex| のラッパー
+    |string.find()| の |vim.regex| 版
+    |string.sub()| で使いやすいようにインデックスも変更
+
+    例: >lua
+    regex.find("/d")("a2c")
+    -- 2
+    -- 2
+<
+
+    引数: ~
+      • {pattern}  (`string`)
+      • {str}      (`string`)
+
+    返り値 (複数): ~
+        (`integer?`) 開始
+        (`integer?`) 終端
+
+regex.match({pattern})({str})                                  *regex.match()*
+    |string.match()| の |vim.regex| 版
+
+    例: >lua
+    regex.match("/d")("a2c")
+    -- "2"
+<
+
+    引数: ~
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 文字列
+
+    返り値: ~
+        (`string?`) パターンに一致した部分文字列
+
+regex.has({pattern})({str})                                      *regex.has()*
+    パターンが含まれているかどうか
+
+    例: >lua
+    regex.has("/d")("a2c")
+    -- true
+<
+
+    引数: ~
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 一致した文字列
+
+    返り値: ~
+        (`boolean`)
+
+regex.is({pattern})({str})                                        *regex.is()*
+    パターンに完全一致するか
+    |regex.has()| のラッパー
+
+    例: >lua
+    regex.is("/d")("a2c")
+    -- false
+<
+
+    引数: ~
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 文字列
+
+    返り値: ~
+        (`boolean`)
+
+regex.substitute({sub})({pattern})({str})                 *regex.substitute()*
+    |substitute()| のラッパー
+    subの関数にはテーブルが渡される
+
+    引数: ~
+      • {sub}      (`string|function`) 文字列であればそれで置換する
+                   関数であればその返り値で置換する
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 文字列
+
+    返り値: ~
+        (`string`) 置換した文字列
+
+regex.gsub({sub})({pattern})({str})                             *regex.gsub()*
+    |string.gsub()| のvim regex版
+    |substitute()| のラッパー
+    {sub} の関数には文字列が渡される
+
+    例: >lua
+    regex.gsub(":")("/d")("a2c")
+    -- "a:c"
+<
+
+    引数: ~
+      • {sub}      (`string|function`) 文字列であればそれで置換する
+                   関数であればその返り値で置換する
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 文字列
+
+    返り値: ~
+        (`string`) 置換した文字列
+
+regex.remove({pattern})({str})                                *regex.remove()*
+    |regex.gsub()| のラッパー
+    {str} から {pattern} を削除する
+
+    例: >lua
+    regex.remove = regex.gsub("")
+
+    regex.remove("/d")("a2c")
+    -- "ac"
+<
+
+    引数: ~
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 文字列
+
+    返り値: ~
+        (`string`) {str} から {pattern} を削除した文字列
+
+regex.filter({cond})({str})                                   *regex.filter()*
+    文字か関数で文字列をフィルターする
+
+    例: >lua
+    regex.filter("0-9")("a2c")
+    -- "2"
+<
+
+    引数: ~
+      • {cond}  (`string|function`) フィルターする条件
+                文字列であればそれに一致するかでフィルターする
+                関数であればその返り値でフィルターする
+      • {str}   (`string`) パターン
+
+    返り値: ~
+        (`string`) フィルターされた文字列
+
+regex.gmatch({pattern})({str})                                *regex.gmatch()*
+    {str} を {pattern} にマッチする部分に分解する
+
+    例: >lua
+    regex.gmatch("[0-9]")("a2c")
+    -- { "2" }
+<
+
+    引数: ~
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 文字列
+
+    返り値: ~
+        (`string[]`) {str} を分解したテーブル
+
+regex.split({delimiter})({str})                                  *regex.split()*
+    文字列を特定の文字で分割する
+    |regex.gamtch()| のラッパー
+
+    引数: ~
+      • {delimiter}  (`string`) 区切る文字
+      • {str}        (`string`) 文字列
+
+    返り値: ~
+        (`string[]`) {str} を分解したテーブル
+
+regex.concat({delimiter})({str1})({str2})                     *regex.concat()*
+    |vim.fs.joinpath()| を一般化したようなもの
+
+    返り値: ~
+        (`string`) {str1} と {str2} を {delimiter} で結合したもの
+
+regex.sub({sub})({pattern})({str})                               *regex.sub()*
+    |string.gsub()| の |vim.regex| 版
+    |regex.gsub()| と違い |substitute()| が使われていない
+    非推奨
+        |regex.gsub()| より遅い
+        |regex.gsub()| と違い"\1"系が使えない
+        マッチした部分を削除して再帰しているため ".@<=."のように後読みする場合
+        |regex.gsub()| と挙動が異なる
+>lua
+            regex.gsub(":")(".@<=.")("123")
+            -- "1::"
+            regex.sub(":")(".@<=.")("123")
+            -- "1:3"
+<
+
+    引数: ~
+      • {sub}      (`string|function`) 文字列であればそれで置換する
+                   関数であればその返り値で置換する
+      • {pattern}  (`string`) パターン
+      • {str}      (`string`) 文字列
+
+    返り値: ~
+        (`string`) 置換された文字列
+
+==============================================================================
+SHA1でハッシュ化する                                            *lua-lib-sha1*
+
+sha1.sha1({msg})                                                 *sha1.sha1()*
+    SHA1でハッシュ化する
+
+    引数: ~
+      • {msg}  (`string`)
+
+    返り値: ~
+        (`string`)
+
+==============================================================================
+SKKを解析する                                                    *lua-lib-skk*
+
+構文解析したり バッファからSKKを読み込んで変換をしたりする
+
+------------------------------------------------------------------------------
+SKKを構文解析する                                                  *skk.parse*
+
+skk.parse.line({str})                                       *skk.parse.line()*
+    一行のSKKを構文解析する
+
+    引数: ~
+      • {str}  (`string`) 一行のSKK
+
+    返り値: ~
+        (`table`) 構文解析した結果
+
+------------------------------------------------------------------------------
+SKK辞書を使い文字列の変換をする                                 *skk.hennkann*
+
+skk.hennkann.fn.buf({buf})({midasi})                   *skk.hennkann.fn.buf()*
+    {buf} のバッファからSKKを読み込んで {midasi} を変換する
+    複数の候補のテーブルを返す
+
+    引数: ~
+      • {buf}     (`integer`) バッファ番号
+      • {midasi}  (`string`) 見出し
+
+    返り値: ~
+        (`string[]`) 複数の候補
+
+skk.hennkann.fn.buf_reverse({buf})({kouho})    *skk.hennkann.fn.buf_reverse()*
+    {buf} のバッファからSKKを読み込んで {kouho} を変換する
+    一つの見出しの文字列を返す
+
+    引数: ~
+      • {buf}    (`integer`) バッファ番号
+      • {kouho}  (`string`) 候補
+
+    返り値: ~
+        (`string?`) 見出し
+
+------------------------------------------------------------------------------
+SKK辞書を編集する                                                *skk.command*
+
+SKKを編集するためのコマンド
+`vim.api.nvim_create_user_command` の引数として与える関数を提供する
+
+skk.command.annotate({opts})                          *skk.command.annotate()*
+    任意の範囲に分類注釈を追加するコマンド
+
+    例: >lua
+        vim.api.nvim_create_user_command("SkkAnnotate",skk.command.annotate,{
+            bar = true,
+            range = "%",
+        })
+<
+
+    引数: ~
+      • {opts}  (`table`)
+
+==============================================================================
+関数を遅延して呼び出す                                     *lua-lib-lazy_call*
+
+lazy_call.lazy({opt})({callback})                           *lazy_call.lazy()*
+    指定した条件のときに関数を1度だけ実行する
+
+    例: >lua
+        -- "h" を入力したら "hoge" を表示する
+        lazy_call.lazy({
+            keys = {
+                { "n", "h" },
+            },
+        })(function()
+            print("hoge")
+        end)
+<
+    引数: ~
+      • {opt}       (`table`) 条件
+                    • {event}? (`string`) そのイベントがトリガーされたとき
+                    • {pattern}? (`string`) {event} と併用する
+                      オートコマンドのパターン
+                    • {keys}? (`[string|string[], string|string[]][]`)
+                      |vim.keymap.set()| の {modes} と、 {lhs} のリスト、の組
+                      のリスト
+                    • {command}? (`string`) そのコマンドを実行したとき
+      • {callback}  (`function`) 呼び出す関数
+
+==============================================================================
+パッケージマネージャー                               *lua-lib-package_manager*
+
+パッケージマネージャー
+使用例:
+https://github.com/stg73/config.nvim/blob/main/lua/packages.lua
+
+package_manager.directory({dir})                 *package_manager.directory()*
+    パッケージを管理するディレクトリを設定する
+
+    引数: ~
+        {dir}  (`string`) ディレクトリのフルパス
+
+    返り値: ~
+        (`table`) 以下を含むテーブル
+
+load({name})                              *package_manager.directory().load()*
+    {name} のパッケージを ロードする
+
+    引数: ~
+      • {name}  (`string`) パッケージの名前
+
+load_opt({opt})({name})               *package_manager.directory().load_opt()*
+    {name} のパッケージを {opt} のタイミングで ロードする
+
+    引数: ~
+      • {opt}   (`table`) オプション
+               • {lazy}? (`table`) 指定された場合は遅延読み込みする
+                 |lazy_call.lazy()| の {opt} と同じ
+               • {setup}? (`string`) すぐに実行される
+               • {hook_pre}? (`string`) ロードされる前に実行される
+               • {hook_post}) ロードされた後に実行される
+      • {name}  (`string`) パッケージの名前
+
+load_table({opts})                 *package_manager.directory().load_table()*
+    `load_opt()` の {opts} を含むテーブルをとる
+    テーブルのキーが `load_opt()` の {name} として使用される
+
+    例: >lua
+        p = package_manager.directory("c:/users/user/package")
+        p.load_table({
+            ["vimdoc-ja"] = { event = "CmdLineEnter" },
+            ["jumpcursor.vim"] = {
+                lazy = {
+                    keys = {
+                        { "n", "<Plug>(jumpcursor-jump)", }
+                    },
+                },
+                setup = function()
+                    vim.keymap.set('n','<leader>j','<Plug>(jumpcursor-jump)')
+                end,
+            },
+        })
+<
+    引数: ~
+      • {opts}  (`table`)
+
+loaded                                    *package_manager.directory().loaded*
+    読み込まれたプラグイン
+
+installed                              *package_manager.directory().installed*
+    インストールされているパッケージ
+
+install({name})({pkg})                 *package_manager.directory().install()*
+    {name} という名前で {pkg} をインストールする
+    {name} が文字列でなれれば {pkg} から決定される
+
+    引数: ~
+      • {name}  (`string`) パッケージの名前
+
+install_table({pkgs})            *package_manager.directory().install_table()*
+    {pkg} を含むテーブルをとる
+    テーブルのキーが `install()` の {name} として使用される
+
+    例: >lua
+        local p = package_manager.directory("/packages/directory")
+        p.install_table({
+            { repo = "stg73/modules.nvim", branch = "main" },
+            hoge = { repo = "https://example.com/hoge.git", tag = "v0.0.1" },
+            fuga = "https://example.com/fuga.git",
+        })
+<
+    引数: ~
+      • {pkgs}  (`table`) パッケージのテーブル
+        キーが文字列の場合その名前でインストールする
+
+is_installed({pkg})               *package_manager.directory().is_installed()*
+    {pkg} がインストールされているかを返す
+
+    引数: ~
+      • {pkg}  (`table`)
+
+    返り値: ~
+        (`boolean`)
+
+uninstall({name})                    *package_manager.directory().uninstall()*
+    {name} のパッケージをアンインストールする
+
+    引数: ~
+      • {name} (`string`) パッケージの名前
+
+update({name})                          *package_manager.directory().update()*
+    {name} のパッケージをアップデートする
+
+    引数: ~
+      • {name} (`string`) パッケージの名前
+
+==============================================================================
+カスタムURLスキームを作る                          *lua-lib-custom_url_scheme*
+
+カスタムURLスキームを作ってneovim内で使えるようにする
+`init()` でスキームを扱うautocmdを作り `add()` でスキームの定義をする
+
+例: >lua
+    custom_url_scheme.init()
+    custom_url_scheme.add({
+        https = open_webpage.open,
+        http = open_webpage.open,
+        github = open_github.open,
+    })
+<
+    上を実行後に `https://example.com` というバッファを開くと
+>lua
+    open_webpage.open("example.com")
+<
+    が実行され https://example.com が閲覧できる
+
+custom_url_scheme.schemes                        *custom_url_scheme.schemes()*
+    スキームの定義
+
+custom_url_scheme.init()                            *custom_url_scheme.init()*
+    オートコマンドの作成
+
+custom_url_scheme.add({tbl})                         *custom_url_scheme.add()*
+    スキームと実行する関数を設定する
+
+    引数: ~
+      • {tbl}  (`table`) キーがスキーム 値が実行される関数
+
+==============================================================================
+ウェブページを閲覧する                                  *lua-lib-open_webpage*
+
+ウェブページをダウンロードしてneovimで閲覧する
+`curl` が必要
+
+open_webpage.open({str})                                 *open_webpage.open()*
+    ウェブページを閲覧する
+    パスを元にファイルタイプをセットする
+    https://example.com を閲覧するには
+>lua
+        open_webpage.open("example.com")
+<
+
+    引数: ~
+      • {str}  (`string`) URLの"https?://"を除いた部分
+
+    返り値: ~
+        (`table`) `vim.system():wait()` と同じ
+
+==============================================================================
+githubのファイルを閲覧                                   *lua-lib-open_github*
+
+githubからファイルをダウンロードして閲覧する open_webpageのラッパー
+
+open_github.get_from_table({tbl})               *open_github.get_from_table()*
+    テーブルを渡す
+
+    例: >lua
+        open_github.get_from_table({
+            repo = "stg73/modules.nvim",
+            commit = "main",
+            file = "readme.txt"
+        })
+<
+
+    引数: ~
+      • {tbl}  (`table`) 以下を含む
+               • {repo} (`string`) リポジトリの名前
+               • {commit}? (`string`) ブランチ コミット タグ
+               • {file} (`string`) ファイルパス
+
+    返り値: ~
+        (`string`) |open_webpage.open()| に渡す文字列
+
+open_github.get_from_string(({str})            *open_github.get_from_string()*
+    {str} のBNF
+>
+        <str> ::= <repo> "\" <commit> path | <repo> path
+        <repo> ::= user "/" repo "/"
+        <commit> ::= "b" branch | "c" commit | "t" tag
+<
+    ブランチ コミットID タグ が指定できる
+    例: >
+        "neovim/neovim/\bmaster/README.md"
+        "neovim/neovim/\tv0.11.5/README.md"
+        "neovim/neovim/\cb80d390/README.md"
+        "neovim/neovim/README.md"
+<
+>lua
+        open_github.get_from_string("stg73/modules.nvim/\\bmain/readme.txt")
+        -- "github.com/stg73/modules.nvim/raw/refs/heads/main/readme.txt"
+<
+
+    引数: ~
+      • {str}  (`string`) URLっぽい文字列
+
+    返り値: ~
+        (`string`) |open_webpage.open()| に渡す文字列
+
+open_github.open({tbl_or_str})                            *open_github.open()*
+    引数がテーブルであれば |open_github.get_from_table()|
+    文字列であれば |open_github.get_from_string()| に渡し
+    返り値を |open_webpage.open()| に渡す
+    成功すると `b:github` にgithubのウェブUIで見る用のURLを代入する
+>lua
+        -- このhelpを見る
+        open_github.open("stg73/modules.nvim/doc/modules.jax")
+        -- webuiで見る
+        vim.ui.open("https://" .. vim.b.github)
+<
+
+    引数: ~
+      • {tbl_or_str}  (`string|table`) URLっぽい文字列 もしくは テーブル
+
+==============================================================================
+文字列を楽に扱う                                        *lua-lib-string_utils*
+
+文字列を操作するためのユーティリティ
+
+------------------------------------------------------------------------------
+文字列からなんらかの要素を取得する                          *string_utils.get*
+
+string_utils.get.original_name_of_backup_file({path})
+                             *string_utils.get.original_name_of_backup_file()*
+    拡張子を付け足すタイプのバックアップファイル名から元のファイル名を取得
+    "hoge.txt.hoge" -> "hoge.txt"
+    "hoge.txt.20251027T124207Z.hoge" -> "hoge.txt"
+
+    例: バックアップファイルのファイルタイプをセットする >lua
+    vim.filetype.add({
+        extension = {
+            bak = function(path,bufnr)
+                return vim.filetype.match({
+                    filename = string_utils.get.original_name_of_backup_file(path),
+                    buf = bufnr,
+                })
+            end
+        }
+    })
+<
+    引数: ~
+      • {path}  (`string`) ファイルパス
+
+    返り値: ~
+        (`string`) 元のファイル名
+
+string_utils.get.path_of_url({url})           *string_utils.get.path_of_url()*
+    URLからパスを取得する
+    |open_webpage.open()| で使われている
+
+    引数: ~
+      • {url}  (`string`) URL
+
+    返り値: ~
+        (`string`) パス
+
+------------------------------------------------------------------------------
+文字列を削除する                                         *string_utils.remove*
+
+string_utils.remove.ansi_escape_code({str})
+                                      *string_utils.remove.ansi_escape_code()*
+    ANSI escape codeを削除する
+
+    引数: ~
+      • {str}  (`string`)
+
+    返り値: ~
+        (`string`) エスケープコードを削除した文字列
+
+string_utils.remove.trailing_space({str})
+                                        *string_utils.remove.trailing_space()*
+行の末尾の空白や末尾の空行を削除する
+
+    引数: ~
+      • {str}  (`string`)
+
+    返り値: ~
+        (`string`)
+
+==============================================================================
+ローマ字を扱う                                                *lua-lib-romaji*
+
+ローマ字と仮名の `regex` で使うためのパターンを提供する
+
+romaji.romaji                                                  *romaji.romaji*
+    ローマ字のパターン 促音は";"
+
+    ローマ字を平仮名に変換する関数は
+>lua
+    regex.gsub(function(x)
+        return character_table.Romaji_Hiragana[x]
+    end))(romaji.romaji)
+<
+
+romaji.romaji_rennzoku                                *romaji.romaji_rennzoku*
+    ローマ字のパターン 促音は子音の連続 "tta" など
+
+romaji.kana                                                      *romaji.kana*
+    平仮名のパターン
 
 ==============================================================================
 キーマップを取得する                                      *lua-lib-get_keymap*
