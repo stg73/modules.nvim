@@ -1066,6 +1066,51 @@ tbl.default({default})({x})                                      *tbl.default()*
         (`any`) {x} もしくは {default}
 
 ==============================================================================
+syntaxのラッパー                                              *lua-lib-syntax*
+
+|syntax| 機能のラッパー
+>vim
+    syn region helpVim		start="^\s\+N\?VIM REFERENCE" end="^$"
+
+>lua
+    syntax.syntax "helpVim" {
+        region = true,
+        start = [[\m^\s\+N\?VIM REFERENCE]],
+        ["end"] = [[\m^$]],
+    }
+<
+syntax.syntax({higroup})({opts})                             *syntax.syntax()*
+    |:syntax| のラッパー
+
+    例: >lua
+    syntax.syntax("vimTodo")({
+        keyword = { "COMBAK", "FIXME", "TODO", "XXX" },
+        contained = true
+    })
+<
+
+    引数: ~
+      • {higroup}  (`string`) ハイライトグループ
+      • {opts}     (`table`) `:syntax` の引数を表すテーブル
+                   正規表現は最初に `\v` がつけられる: >lua
+                   syntax.syntax("hoge")({
+                       match = ".+"
+                   })
+<>vim
+                   syntax match hoge '\v.+'
+
+syntax.link({higroup1})({higroup2})                            *syntax.link()*
+    ハイライトグループをリンクする
+
+    例: >lua
+    syntax.link("vimTodo")("Todo")
+<
+
+    引数: ~
+      • {higroup1}  (`string`) ハイライトグループ
+      • {higroup2}  (`string`) ハイライトグループ
+
+==============================================================================
 キーマップを取得する                                      *lua-lib-get_keymap*
 
 get_keymap.get({mode},{lhs},{opts})                         *get_keymap.get()*

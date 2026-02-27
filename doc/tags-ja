@@ -27,6 +27,7 @@ lua-lib-sha1	modules.jax	/*lua-lib-sha1*
 lua-lib-skk	modules.jax	/*lua-lib-skk*
 lua-lib-string_utils	modules.jax	/*lua-lib-string_utils*
 lua-lib-substitute_command	modules.jax	/*lua-lib-substitute_command*
+lua-lib-syntax	modules.jax	/*lua-lib-syntax*
 lua-lib-tbl	modules.jax	/*lua-lib-tbl*
 modules	modules.jax	/*modules*
 modules-intro	modules.jax	/*modules-intro*
@@ -78,6 +79,8 @@ string_utils.remove	modules.jax	/*string_utils.remove*
 string_utils.remove.ansi_escape_code()	modules.jax	/*string_utils.remove.ansi_escape_code()*
 string_utils.remove.trailing_space()	modules.jax	/*string_utils.remove.trailing_space()*
 substitute_command.create()	modules.jax	/*substitute_command.create()*
+syntax.link()	modules.jax	/*syntax.link()*
+syntax.syntax()	modules.jax	/*syntax.syntax()*
 tbl.append()	modules.jax	/*tbl.append()*
 tbl.chunks()	modules.jax	/*tbl.chunks()*
 tbl.compose()	modules.jax	/*tbl.compose()*
