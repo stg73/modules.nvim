@@ -10,19 +10,13 @@ function M.filter(fn) return function(arg_tbl)
     return t
 end end
 
--- テーブルから条件に適合するものを検索する
-function M.match(pre) return function(tbl)
-    local function loop(i)
-        local arg = tbl[i]
-        if arg == nil then
-            return nil
-        elseif pre(arg) then
-            return arg
-        else
-            return loop(i + 1)
+M.match = function(pred) return function(tbl)
+    for k,v in pairs(tbl) do
+        if pred(v) then
+            return v
         end
     end
-    return loop(1)
+    return nil
 end end
 
 function M.map(fn) return function(arg_tbl)
@@ -43,17 +37,6 @@ function M.pairs(fn) return function(arg_tbl)
     end
     return t
 end end
-
--- シェルのパイプのように関数を繋げていく
-function M.pipe(tbl)
-    local function loop(fn_idx,arg)
-        if tbl[fn_idx] == nil then
-            return arg
-        end
-        return loop(fn_idx + 1,tbl[fn_idx](arg))
-    end
-    return loop(2,tbl[1])
-end
 
 -- テーブルからキーの値を取得する M.pipe({{"hoge","fuga"},M.get(1)}) == "hoge"
 function M.get(key) return function(tbl)
@@ -83,6 +66,10 @@ local function compose(f1,f2)
 end
 M.compose = M.fold(compose)
 
+M.pipe = M.fold(function(v,f)
+    return f(v)
+end)
+
 function M.curry(n) return function(fn)
     n = n or 2
     local function loop(args)
@@ -103,11 +90,10 @@ function M.range(s) return function(e)
         if i <= e then
             table.insert(t,i)
             return loop(i + 1)
-        else
-            return t
         end
     end
-    return loop(s)
+    loop(s)
+    return t
 end end
 
 function M.chunks(size) return function(tbl)
@@ -157,7 +143,7 @@ M.flatten = function(depth) return function(list)
     local new_list = {}
     local function flatten(depth,list)
         for _,v in pairs(list) do
-            if (type(v) == "table") and depth >= 1 then
+            if (type(v) == "table") and (depth >= 1) then
                 flatten(depth - 1,v)
             else
                 table.insert(new_list,v)
