@@ -514,35 +514,6 @@ substitute_command.create_command({name})({tbl}) *substitute_command.create()*
 正規表現                                                       *lua-lib-regex*
 
 vimの正規表現を使って文字列を操作する
-バックスラッシュの代わりにスラッシュを使う
-
-regex.convert({str})                                         *regex.convert()*
-    スラッシュを使った正規表現をvimの正規表現に変換
-
-    例: >lua
-    regex.convert("/s")
-    -- "\\s"
-<
-
-    引数: ~
-      • {str}  (`string`)
-
-    返り値: ~
-        (`string`) vimの正規表現
-
-regex.escape({str})                                           *regex.escape()*
-    スラッシュをエスケープ文字として扱わないようにエスケープする
-
-    例: >lua
-    regex.escape("/s")
-    -- "//s"
-<
-
-    引数: ~
-      • {str}  (`string`)
-
-    返り値: ~
-        (`string`) エスケープされた文字列
 
 regex.find({pattern})({str})                                    *regex.find()*
     |vim.regex| のラッパー
@@ -550,7 +521,7 @@ regex.find({pattern})({str})                                    *regex.find()*
     |string.sub()| で使いやすいようにインデックスも変更
 
     例: >lua
-    regex.find("/d")("a2c")
+    regex.find("\\d")("a2c")
     -- 2
     -- 2
 <
@@ -567,7 +538,7 @@ regex.match({pattern})({str})                                  *regex.match()*
     |string.match()| の |vim.regex| 版
 
     例: >lua
-    regex.match("/d")("a2c")
+    regex.match("\\d")("a2c")
     -- "2"
 <
 
@@ -582,7 +553,7 @@ regex.has({pattern})({str})                                      *regex.has()*
     パターンが含まれているかどうか
 
     例: >lua
-    regex.has("/d")("a2c")
+    regex.has("\\d")("a2c")
     -- true
 <
 
@@ -598,7 +569,7 @@ regex.is({pattern})({str})                                        *regex.is()*
     |regex.has()| のラッパー
 
     例: >lua
-    regex.is("/d")("a2c")
+    regex.is("\\d")("a2c")
     -- false
 <
 
@@ -628,7 +599,7 @@ regex.gsub({sub})({pattern})({str})                             *regex.gsub()*
     {sub} の関数には文字列が渡される
 
     例: >lua
-    regex.gsub(":")("/d")("a2c")
+    regex.gsub(":")("\\d")("a2c")
     -- "a:c"
 <
 
@@ -648,7 +619,7 @@ regex.remove({pattern})({str})                                *regex.remove()*
     例: >lua
     regex.remove = regex.gsub("")
 
-    regex.remove("/d")("a2c")
+    regex.remove("\\d")("a2c")
     -- "ac"
 <
 

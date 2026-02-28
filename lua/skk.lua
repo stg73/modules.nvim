@@ -49,8 +49,8 @@ function P.midasi(midasi)
     end
 end
 
-P.kouho_chunk = regex.gmatch("//@<=[^//]+")
--- regex.gmatch("[^//]+") -- 前の定義 なぜかSKK-JISYO.Lでは実際よりも要素の数が大きくなる
+P.kouho_chunk = regex.gmatch("/@<=[^/]+")
+-- regex.gmatch("[^/]+") -- 前の定義 なぜかSKK-JISYO.Lでは実際よりも要素の数が大きくなる
 
 function P.kouho(kouho)
     return {
@@ -104,14 +104,14 @@ end
 
 -- ユーザ辞書用
 
-G.okuri_chunk = regex.match("//(/[(.+//)+/]//)+")
+G.okuri_chunk = regex.match("/(\\[(.+/)+\\]/)+")
 
-P.okuri_chunk = regex.gmatch("/[.{-}/]")
+P.okuri_chunk = regex.gmatch("\\[.{-}\\]")
 
 function P.okuri_chunk_entry(okuri_chunk)
     return {
         okuri = regex.match("(^.)@<=.")(okuri_chunk),
-        stem = regex.gmatch("//@<=[^///[/]]+")(okuri_chunk)
+        stem = regex.gmatch("/@<=[^/\\[\\]]+")(okuri_chunk)
     }
 end
 
@@ -119,27 +119,27 @@ end
 P.expressions = tbl.compose({ tbl.map(P.line), regex.split("\n") })
 
 -- エントリから見出しを取得
-G.midasi = regex.match("^/S+")
+G.midasi = regex.match("^\\S+")
 
 -- エントリから候補群を取得
-G.kouho_chunk = regex.remove("(/[(.+//)+/]//)+|^/S+ ") -- 見出し部と送り厳密部を削除
+G.kouho_chunk = regex.remove("(\\[(.+/)+\\]/)+|^\\S+ ") -- 見出し部と送り厳密部を削除
 
 -- 見出しからそのokuriを取得
-G.midasi_okuri = regex.match("/l")
+G.midasi_okuri = regex.match("\\l")
 
 -- 見出しからokuriを除いた語幹を取得
 G.midasi_stem = regex.match("[あ-んー]+")
 
 -- 候補と注釈から候補を取得
-G.kouho = regex.match("^[^;//]+")
+G.kouho = regex.match("^[^;/]+")
 
 -- 候補と注釈から注釈を取得
-G.annotation = regex.match(";@<=[^//]*")
+G.annotation = regex.match(";@<=[^/]*")
 
-I.entry = regex.is("/S+ //.+//")
+I.entry = regex.is("\\S+ /.+/")
 
 -- 角括弧で示される候補の分類を取得
-G.bunnrui = regex.match("(^/S+ .+;/[)@<=[^/]]+")
+G.bunnrui = regex.match("(^\\S+ .+;\\[)@<=[^\\]]+")
 
 -- "skk-specialized"のシンタクスハイライトに使われている
 function G.bunnrui_from_table(exprs)
@@ -155,13 +155,13 @@ function G.bunnrui_from_table(exprs)
     end
 end
 
-I.userdict_entry = regex.is("/S+ //.+//(/[(.+//)+/]//)+$")
+I.userdict_entry = regex.is("\\S+ /.+/(\\[(.+/)+\\]/)+$")
 
 I.comment = regex.is(";+( .+)*")
 
-I.okuri_comment = regex.is(";; okuri-(ari|nasi) entries/.")
+I.okuri_comment = regex.is(";; okuri-(ari|nasi) entries\\.")
 
-I.okuri_midasi = regex.is("[あ-んー]+/l")
+I.okuri_midasi = regex.is("[あ-んー]+\\l")
 
 C.kouho = tbl.compose({ tbl.fold(function(x,y) return x + y end), tbl.map(table.getn), tbl.map(P.kouho_chunk), tbl.map(G.kouho_chunk), tbl.filter(I.entry) })
 

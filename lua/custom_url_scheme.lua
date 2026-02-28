@@ -1,6 +1,5 @@
 local M = {}
 
-local regex = require("regex")
 local t = require("tbl")
 
 function M.init()

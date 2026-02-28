@@ -6,7 +6,7 @@ local t = require("tbl")
 
 -- パッケージを管理するディレクトリを決める
 function M.directory(d)
-    local dir = r.remove("//$")(d)
+    local dir = r.remove("/$")(d)
     local installed = dir .. "/_installed.json"
 
     local D = {}
@@ -43,7 +43,7 @@ function M.directory(d)
         end
 
         local pkg = (type(pkg) == "string") and { repo = pkg } or pkg
-        pkg.repo = not r.has("^.+:////")(pkg.repo) and "https://github.com/" .. pkg.repo or pkg.repo -- URLスキームが無ければgithubを使う
+        pkg.repo = not r.has("^.+://")(pkg.repo) and "https://github.com/" .. pkg.repo or pkg.repo -- URLスキームが無ければgithubを使う
         local name = (type(name) == "string") and name or vim.fs.basename(pkg.repo)
 
         if D.is_installed(pkg) then
@@ -116,7 +116,7 @@ function M.directory(d)
         if vim.v.vim_did_enter ~= 0 then
             -- vimの代わりに plugin ディレクトリにあるファイルをソースする
             local plugin = dir .. "/" .. name .. "/plugin"
-            local sourceable = r.is(".+/.(lua|vim)")
+            local sourceable = r.is(".+\\.(lua|vim)")
             local files = vim.fs.find(sourceable,{ path = plugin, type = "file", limit = math.huge })
             t.map(vim.cmd.source)(files)
         end

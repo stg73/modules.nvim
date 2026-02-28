@@ -1,22 +1,10 @@
 local M = {}
 
--- スラッシュを使った正規表現をvimの正規表現に変更
-function M.convert(str)
-    local backslash_as_literal = string.gsub(string.gsub(str,[[/\]],[[\]]),[[\]],[[\\]]) -- バックスラッシュをリテラルとして扱う
-    local regex = string.gsub(backslash_as_literal,"/(.)","\\%1")
-    return regex
-end
-
-function M.escape(str)
-    local escaped = string.gsub(str,"/","//")
-    return escaped
-end
-
 -- vim.regexのラッパー
 -- string.findのvim.regex版
 -- string.subで使いやすいようにインデックスも変更
 function M.find(pattern) return function(str)
-    local s,e = vim.regex("\\v" .. M.convert(pattern)):match_str(str)
+    local s,e = vim.regex("\\v" .. pattern):match_str(str)
 
     return s and s + 1,e -- nilに+しないように"and"
 end end
@@ -47,9 +35,9 @@ end
 -- subの関数にはテーブルが渡される
 function M.substitute(sub) return function(pattern) return function(str)
     if type(sub) == "function" then
-        return vim.fn.substitute(str,"\\v" .. M.convert(pattern),sub,"g")
+        return vim.fn.substitute(str,"\\v" .. pattern,sub,"g")
     else
-        return vim.fn.substitute(str,"\\v" .. M.convert(pattern),M.convert(sub),"g")
+        return vim.fn.substitute(str,"\\v" .. pattern,sub,"g")
     end
 end end end
 
@@ -58,7 +46,7 @@ end end end
 -- subの関数には文字列が渡される
 function M.gsub(sub) return function(pattern) return function(str)
     if type(sub) == "function" then
-        return vim.fn.substitute(str,"\\v" .. M.convert(pattern),function(t)
+        return vim.fn.substitute(str,"\\v" .. pattern,function(t)
             local ret = sub(t[1])
             -- string.gsubのように 返り値が偽であれば置換しない
             if ret then
@@ -68,7 +56,7 @@ function M.gsub(sub) return function(pattern) return function(str)
             end
         end,"g")
     else
-        return vim.fn.substitute(str,"\\v" .. M.convert(pattern),M.convert(sub),"g")
+        return vim.fn.substitute(str,"\\v" .. pattern,sub,"g")
     end
 end end end
 
