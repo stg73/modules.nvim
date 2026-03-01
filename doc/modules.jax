@@ -43,6 +43,20 @@ tbl.curry({n})({fn})                                             *tbl.curry()*
     -- "hoge,fuga"
 <
 
+    単にカリー化するだけでなく、引数をまとめて渡すこともできる: >lua
+    local p = tbl.curry(3)(print)
+    p "a" "b" "c"
+    p("a","b","c")
+    p("a","b") "c"
+    p "a" ("b","c")
+    print("a","b","c")
+    -- a b c
+
+    p(1)(2)(3)
+    p(1,2,3)
+    -- 1 2 3
+<
+
     引数: ~
       • {n}   (`integer?`, 既定: `2`) {fn} の引数の数
       • {fn}  (`function`) カリー化する関数

@@ -70,18 +70,32 @@ M.pipe = M.fold(function(v,f)
     return f(v)
 end)
 
+local copy_table = function(tbl)
+    local new_tbl = {}
+    for k,v in pairs(tbl) do
+        new_tbl[k] = v
+    end
+    return new_tbl
+end
+
 function M.curry(n) return function(fn)
     n = n or 2
-    local function loop(args)
-        if #args >= n then
-            return fn(unpack(args))
+    local function loop(args,len,actual_len)
+        if len >= n then
+            return fn(unpack(args,1,actual_len))
         else
-            return function(arg)
-                return loop(M.append(arg)(args))
+            return function(...)
+                local _args = copy_table(args)
+                for _,v in pairs({...}) do
+                    table.insert(_args,v)
+                end
+                local _actual_len = select("#",...)
+                local _len = (_actual_len == 0) and 1 or _actual_len
+                return loop(_args,len + _len,actual_len + _actual_len)
             end
         end
     end
-    return loop({})
+    return loop({},0,0)
 end end
 
 function M.range(s) return function(e)
@@ -109,14 +123,6 @@ function M.chunks(size) return function(tbl)
     loop(1)
     return t
 end end
-
-local copy_table = function(tbl)
-    local new_tbl = {}
-    for k,v in pairs(tbl) do
-        new_tbl[k] = v
-    end
-    return new_tbl
-end
 
 function M.append(x) return function(list)
     local new_list = copy_table(list)
