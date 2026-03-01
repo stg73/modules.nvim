@@ -83,7 +83,25 @@ tbl.flip({fn})                                                    *tbl.flip()*
     返り値: ~
         (`function`) 引数を入れ換えた関数
 
-tbl.fold({fn})({tbl})                                             *tbl.fold()*
+tbl.fold({fn})({init})({list})                                    *tbl.fold()*
+    fold
+
+    例: >lua
+    tbl.fold(function(x,y)
+        return x + y
+    end)(0)({ 1, 2, 3 })
+    -- 6
+<
+
+    引数: ~
+      • {fn}    (`function`) 2変数関数
+      • {init}  (`function`) 初期値
+      • {list}  (`any[]`) 引数のリスト
+
+    返り値: ~
+        (`any`)
+
+tbl.fold1({fn})({list})                                          *tbl.fold1()*
     fold
 
     例: >lua
@@ -94,8 +112,8 @@ tbl.fold({fn})({tbl})                                             *tbl.fold()*
 <
 
     引数: ~
-      • {fn}   (`function`) 2変数関数
-      • {tbl}  (`any[]`) 引数のテーブル
+      • {fn}    (`function`) 2変数関数
+      • {list}  (`any[]`) 引数のリスト
 
     返り値: ~
         (`any`)

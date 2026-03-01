@@ -89,6 +89,7 @@ tbl.filter()	modules.jax	/*tbl.filter()*
 tbl.flatten()	modules.jax	/*tbl.flatten()*
 tbl.flip()	modules.jax	/*tbl.flip()*
 tbl.fold()	modules.jax	/*tbl.fold()*
+tbl.fold1()	modules.jax	/*tbl.fold1()*
 tbl.get()	modules.jax	/*tbl.get()*
 tbl.id()	modules.jax	/*tbl.id()*
 tbl.insert()	modules.jax	/*tbl.insert()*

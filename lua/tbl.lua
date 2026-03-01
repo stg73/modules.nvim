@@ -47,16 +47,22 @@ function M.flip(fn) return function(x) return function(y)
     return fn(y)(x)
 end end end
 
-function M.fold(fn) return function(tbl)
-    local function loop(result,i)
-        if tbl[i] == nil then
-            return result
+local function fold(fn,init,i,list)
+    local function loop(init,i)
+        if list[i] == nil then
+            return init
         else
-            return loop(fn(result,tbl[i]),i + 1)
+            return loop(fn(init,list[i]),i + 1)
         end
     end
-    return loop(tbl[1],2)
+    return loop(init,i)
+end
+M.fold1 = function(fn) return function(list)
+    return fold(fn,list[1],2,list)
 end end
+M.fold = function(fn) return function(init) return function(list)
+    return fold(fn,init,1,list)
+end end end
 
 -- 関数合成
 local function compose(f1,f2)
@@ -64,9 +70,9 @@ local function compose(f1,f2)
         return f1(f2(x))
     end
 end
-M.compose = M.fold(compose)
+M.compose = M.fold1(compose)
 
-M.pipe = M.fold(function(v,f)
+M.pipe = M.fold1(function(v,f)
     return f(v)
 end)
 

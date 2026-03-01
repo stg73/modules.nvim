@@ -163,7 +163,7 @@ I.okuri_comment = regex.is(";; okuri-(ari|nasi) entries\\.")
 
 I.okuri_midasi = regex.is("[あ-んー]+\\l")
 
-C.kouho = tbl.compose({ tbl.fold(function(x,y) return x + y end), tbl.map(table.getn), tbl.map(P.kouho_chunk), tbl.map(G.kouho_chunk), tbl.filter(I.entry) })
+C.kouho = tbl.compose({ tbl.fold1(function(x,y) return x + y end), tbl.map(table.getn), tbl.map(P.kouho_chunk), tbl.map(G.kouho_chunk), tbl.filter(I.entry) })
 
 C.entry = tbl.compose({ table.getn, tbl.filter(I.entry) })
 
