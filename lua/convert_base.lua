@@ -27,7 +27,7 @@ function M.to(base) return function(int)
 end end
 
 function M.align(len) return function(list)
-    local new_list = tbl.map(tbl.const(0))(tbl.range(1)(len - #list))
+    local new_list = tbl.map(tbl.const(0))(tbl.range({ 1, len - #list }))
     return vim.list_extend(new_list,list)
 end end
 

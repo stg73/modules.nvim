@@ -104,17 +104,41 @@ function M.curry(n) return function(fn)
     return loop({},0,0)
 end end
 
-function M.range(s) return function(e)
-    local t = {}
-    local function loop(i)
-        if i <= e then
-            table.insert(t,i)
-            return loop(i + 1)
+M.range = function(list)
+    local start = list[1]
+    local dist,finish
+    if list[3] then
+        finish = list[3]
+        dist = list[2] - start
+    else
+        finish = list[2]
+        if start <= finish then
+            dist = 1
+        else
+            dist = -1
         end
     end
-    loop(s)
-    return t
-end end
+    local hoge = (function()
+        if dist >= 1 then
+            return function(n)
+                return n <= finish
+            end
+        else
+            return function(n)
+                return n >= finish
+            end
+        end
+    end)()
+    local new_list = {}
+    local function loop(i)
+        if hoge(i) then
+            table.insert(new_list,i)
+            return loop(i + dist)
+        end
+    end
+    loop(start)
+    return new_list
+end
 
 function M.chunks(size) return function(tbl)
     local t = {}

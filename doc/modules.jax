@@ -177,7 +177,7 @@ tbl.pipe({tbl})                                                   *tbl.pipe()*
 
     例: >lua
     tbl.pipe({
-        tbl.range(0)(10),
+        tbl.range({0,10}),
         tbl.filter(function(x)
             return x % 2 == 0
         end),
@@ -193,17 +193,16 @@ tbl.pipe({tbl})                                                   *tbl.pipe()*
     返り値: ~
         (`any`) {tbl} の最後の関数の返り値
 
-tbl.range({s})({e})                                              *tbl.range()*
-    {s} から {e} までの範囲の数を含むリストを作る
+tbl.range({list})                                                *tbl.range()*
+    range
 
     例: >lua
-        tbl.range(1)(8)
+        tbl.range({1,8})
         -- { 1, 2, 3, 4, 5, 6, 7, 8 }
 <
 
     引数: ~
-      • {s}  (`integer`) 開始
-      • {e}  (`integer`) 終了
+      • {list}  (`number[]`) 範囲を表現するリスト
 
     返り値: ~
         (`integer[]`)
@@ -314,7 +313,7 @@ tbl.zip({list})                                                    *tbl.zip()*
         }
         -- { { 1, 2 }, { 1, 2 } }
         tbl.pipe {
-            tbl.range(1)(10),
+            tbl.range({1,10}),
             tbl.chunks(2),
             tbl.zip,
         }

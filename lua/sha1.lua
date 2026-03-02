@@ -40,7 +40,7 @@ local function update_state(H,block)
     end)(tbl.chunks(4)(block))
     tbl.map(function(i)
         W[i] = S(1,bit.bxor(W[i - 3],W[i - 8],W[i - 14],W[i - 16]))
-    end)(tbl.range(17)(80))
+    end)(tbl.range({ 17, 80 }))
 
     local I = tbl.fold(function(H,t)
         return {
@@ -50,7 +50,7 @@ local function update_state(H,block)
             H[3],
             H[4],
         }
-    end)(H)(tbl.range(1)(80))
+    end)(H)(tbl.range({ 1, 80 }))
 
     return tbl.map(function(t)
         return (t[1] + t[2]) % (2 ^ 32)
@@ -67,7 +67,7 @@ function M.sha1(msg)
     local non_zero_bytes = #bytes + 8
     local current_mod = non_zero_bytes % 64
     if current_mod ~= 0 then
-        local second_append = tbl.map(tbl.const(0x00))(tbl.range(1)(64 - current_mod))
+        local second_append = tbl.map(tbl.const(0x00))(tbl.range({1,64 - current_mod}))
         vim.list_extend(bytes,second_append)
     end
     local msg_bit_len = string.len(msg) * 8
@@ -92,7 +92,7 @@ function M.sha1_(msg)
     local non_zero_bytes = #bytes + 8
     local current_mod = non_zero_bytes % 64
     if current_mod ~= 0 then
-        local second_append = tbl.map(tbl.const(0x00))(tbl.range(1)(64 - current_mod))
+        local second_append = tbl.map(tbl.const(0x00))(tbl.range({1,64 - current_mod}))
         vim.list_extend(bytes,second_append)
     end
     local msg_bit_len = string.len(msg) * 8
@@ -137,7 +137,7 @@ function M.sha1_(msg)
         end)(tbl.chunks(4)(block))
         tbl.map(function(i)
             W[i] = S(1,bit.bxor(W[i - 3],W[i - 8],W[i - 14],W[i - 16]))
-        end)(tbl.range(17)(80))
+        end)(tbl.range({ 17, 80 }))
 
         tbl.map(function(t)
             local TEMP = S(5,A) + f(t,B,C,D) + E + W[t] + K(t)
@@ -146,7 +146,7 @@ function M.sha1_(msg)
             C = S(30,B)
             B = A
             A = TEMP
-        end)(tbl.range(1)(80))
+        end)(tbl.range({ 1, 80 }))
 
         H[1] = (H[1] + A) % (2 ^ 32)
         H[2] = (H[2] + B) % (2 ^ 32)
