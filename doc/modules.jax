@@ -207,6 +207,21 @@ tbl.range({list})                                                *tbl.range()*
     返り値: ~
         (`integer[]`)
 
+tbl.replicate({n})({x})                                      *tbl.replicate()*
+    {x} を {n} 個含むリストを作る
+
+    例: >lua
+        tbl.replicate(4)(0)
+        -- { 0, 0, 0, 0 }
+<
+
+    引数: ~
+      • {n}  (`integer`)
+      • {x}  (`any`)
+
+    返り値: ~
+        (`any[]`) {x} を {n} 個含むリスト
+
 tbl.chunks({size})({tbl})                                       *tbl.chunks()*
     リストを分割する
     nu の chunks に相当

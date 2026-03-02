@@ -140,6 +140,18 @@ M.range = function(list)
     return new_list
 end
 
+M.replicate = function(n) return function(x)
+    local new_list = {}
+    local function loop(i)
+        if i >= 1 then
+            table.insert(new_list,x)
+            return loop(i - 1)
+        end
+    end
+    loop(n)
+    return new_list
+end end
+
 function M.chunks(size) return function(tbl)
     local t = {}
     local function loop(i)
