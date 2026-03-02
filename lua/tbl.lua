@@ -118,20 +118,16 @@ M.range = function(list)
             dist = -1
         end
     end
-    local hoge = (function()
-        if dist >= 1 then
-            return function(n)
-                return n <= finish
-            end
+    local not_last = function(n)
+        if dist > 0 then
+            return n <= finish
         else
-            return function(n)
-                return n >= finish
-            end
+            return n >= finish
         end
-    end)()
+    end
     local new_list = {}
     local function loop(i)
-        if hoge(i) then
+        if not_last(i) then
             table.insert(new_list,i)
             return loop(i + dist)
         end
