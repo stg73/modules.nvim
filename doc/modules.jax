@@ -38,7 +38,8 @@ tbl.compose({fn_tbl})                                          *tbl.compose()*
 
 tbl.curry({n})({fn})                                             *tbl.curry()*
     関数をカリー化する
->lua
+
+    例: >lua
     tbl.curry(2)(table.concat)({ "hoge", "fuga" })(",")
     -- "hoge,fuga"
 <
@@ -63,6 +64,25 @@ tbl.curry({n})({fn})                                             *tbl.curry()*
 
     返り値: ~
         (`function`) カリー化された関数
+
+tbl.uncurry({fn})                                              *tbl.uncurry()*
+    カリー化された関数を多変数関数にする
+
+    例: >lua
+    tbl.const(1)(2)
+    -- 1
+    tbl.const(1,2)
+    -- <function 1>
+    local const = tbl.uncurry(tbl.const)
+    const(1,2)
+    -- 1
+<
+
+    引数: ~
+      • {fn}  (`function`) カリー化された関数
+
+    返り値: ~
+        (`function`) 多変数関数
 
 tbl.filter({pre})({tbl})                                        *tbl.filter()*
     {pre} を条件として {tbl} をフィルターする

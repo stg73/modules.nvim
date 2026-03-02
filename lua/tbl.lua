@@ -104,6 +104,20 @@ function M.curry(n) return function(fn)
     return loop({},0,0)
 end end
 
+M.uncurry = function(fn) return function(...)
+    local args = {...}
+    local len = select("#",...)
+    local function loop(fn,i)
+        local retv = fn(args[i])
+        if i >= len then
+            return retv
+        else
+            return loop(retv,i + 1)
+        end
+    end
+    return loop(fn,1)
+end end
+
 M.range = function(list)
     local start = list[1]
     local dist,finish
