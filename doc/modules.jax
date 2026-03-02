@@ -304,6 +304,29 @@ tbl.flatten({depth})({list})                                   *tbl.flatten()*
     返り値: ~
         (`any[]`)
 
+tbl.zip({list})                                                    *tbl.zip()*
+    リストをzipする
+
+    例: >lua
+        tbl.zip {
+            {1,1},
+            {2,2},
+        }
+        -- { { 1, 2 }, { 1, 2 } }
+        tbl.pipe {
+            tbl.range(1)(10),
+            tbl.chunks(2),
+            tbl.zip,
+        }
+        -- { { 1, 3, 5, 7, 9 }, { 2, 4, 6, 8, 10 } }
+<
+
+    引数: ~
+      • {list}  (`any[][]`) リストのリスト
+
+    返り値: ~
+        (`any[][]`) タプルのリスト
+
 tbl.reverse({list})                                            *tbl.reverse()*
     リストを逆順にする
 

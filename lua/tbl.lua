@@ -178,6 +178,20 @@ M.reverse = function(list)
     return new_list
 end
 
+M.zip = function(list)
+    local len = #list
+    local new_list = {}
+    local function loop(i)
+        local tuple = M.map(M.get(i))(list)
+        if #tuple == len then
+            table.insert(new_list,tuple)
+            return loop(i + 1)
+        end
+    end
+    loop(1)
+    return new_list
+end
+
 M.id = function(x)
     return x
 end
