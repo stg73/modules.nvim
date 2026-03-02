@@ -143,7 +143,7 @@ G.bunnrui = regex.match("(^\\S+ .+;\\[)@<=[^\\]]+")
 
 -- "skk-specialized"のシンタクスハイライトに使われている
 function G.bunnrui_from_table(exprs)
-    local entry = tbl.match(function(expr)
+    local entry = tbl.find(function(expr)
         if I.entry(expr) then
             return G.bunnrui(expr)
         end

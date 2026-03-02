@@ -86,6 +86,7 @@ tbl.const()	modules.jax	/*tbl.const()*
 tbl.curry()	modules.jax	/*tbl.curry()*
 tbl.default()	modules.jax	/*tbl.default()*
 tbl.filter()	modules.jax	/*tbl.filter()*
+tbl.find()	modules.jax	/*tbl.find()*
 tbl.flatten()	modules.jax	/*tbl.flatten()*
 tbl.flip()	modules.jax	/*tbl.flip()*
 tbl.fold()	modules.jax	/*tbl.fold()*
@@ -94,7 +95,6 @@ tbl.get()	modules.jax	/*tbl.get()*
 tbl.id()	modules.jax	/*tbl.id()*
 tbl.insert()	modules.jax	/*tbl.insert()*
 tbl.map()	modules.jax	/*tbl.map()*
-tbl.match()	modules.jax	/*tbl.match()*
 tbl.pairs()	modules.jax	/*tbl.pairs()*
 tbl.pipe()	modules.jax	/*tbl.pipe()*
 tbl.prepend()	modules.jax	/*tbl.prepend()*

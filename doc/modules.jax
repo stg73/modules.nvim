@@ -162,12 +162,12 @@ tbl.pairs({fn})({tbl})                                           *tbl.pairs()*
     返り値: ~
         (`table`)
 
-tbl.match({pre})({tbl})                                          *tbl.match()*
-    {tbl} の中から {pre} に合致するものを取得する
+tbl.find({pred})({tbl})                                           *tbl.find()*
+    {tbl} の中から {pred} に合致するものを取得する
 
     引数: ~
-      • {pre}  (`function`) 1変数関数
-      • {tbl}  (`any[]`) 検索するテーブル
+      • {pred}  (`function`) 1変数関数
+      • {tbl}   (`any[]`) 検索するテーブル
 
     返り値: ~
         (`any?`)

@@ -14,7 +14,7 @@ function M.get(mode,lhs,opts)
         return nil
     end
 
-    local keymap = require("tbl").match(function(t) return t.lhs == lhs end)(keymap_table)
+    local keymap = require("tbl").find(function(t) return t.lhs == lhs end)(keymap_table)
 
     if opts.remap then
         return M.get(mode,keymap.rhs,{ buffer = opts.buffer })

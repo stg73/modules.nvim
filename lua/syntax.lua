@@ -48,7 +48,7 @@ M._sub_cmd_handler = {
 function M._build_cmd(higroup) return function(opts)
     local opts_keys = vim.tbl_keys(opts)
     local sub_cmd_keys = vim.tbl_keys(M._sub_cmd_handler)
-    local command = t.match(function(x)
+    local command = t.find(function(x)
         return vim.list_contains(sub_cmd_keys,x)
     end)(opts_keys)
     local cmd_first = { command, higroup, M._sub_cmd_handler[command](opts[command]) }

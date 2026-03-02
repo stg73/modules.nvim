@@ -10,7 +10,7 @@ function M.filter(fn) return function(arg_tbl)
     return t
 end end
 
-M.match = function(pred) return function(tbl)
+M.find = function(pred) return function(tbl)
     for k,v in pairs(tbl) do
         if pred(v) then
             return v

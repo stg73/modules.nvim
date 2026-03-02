@@ -27,7 +27,7 @@ function M.directory(d)
     end end
 
     function D.is_installed(pkg)
-        return t.match(D.same_package(pkg))(vim.tbl_values(D.installed))
+        return t.find(D.same_package(pkg))(vim.tbl_values(D.installed))
     end
 
     -- vim.system のエラー出力用
