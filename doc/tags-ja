@@ -87,6 +87,8 @@ tbl.curry()	modules.jax	/*tbl.curry()*
 tbl.default()	modules.jax	/*tbl.default()*
 tbl.filter()	modules.jax	/*tbl.filter()*
 tbl.find()	modules.jax	/*tbl.find()*
+tbl.fix()	modules.jax	/*tbl.fix()*
+tbl.fix2()	modules.jax	/*tbl.fix2()*
 tbl.flatten()	modules.jax	/*tbl.flatten()*
 tbl.flip()	modules.jax	/*tbl.flip()*
 tbl.fold()	modules.jax	/*tbl.fold()*

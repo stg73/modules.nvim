@@ -47,22 +47,39 @@ function M.flip(fn) return function(x) return function(y)
     return fn(y)(x)
 end end end
 
-local function fold(fn,init,i,list)
-    local function loop(init,i)
-        if list[i] == nil then
-            return init
-        else
-            return loop(fn(init,list[i]),i + 1)
-        end
+M.fix2 = function(f)
+    local function fixed(...)
+        return f(fixed,...)
     end
-    return loop(init,i)
+    return fixed
 end
-M.fold1 = function(fn) return function(list)
-    return fold(fn,list[1],2,list)
-end end
+
+local function fix(f)
+    return f(function(x)
+        return fix(f)(x)
+    end)
+end
+M.fix = fix
+
 M.fold = function(fn) return function(init) return function(list)
-    return fold(fn,init,1,list)
+    return M.fix2(function(loop,acc,i)
+        if list[i] == nil then
+            return acc
+        else
+            return loop(fn(acc,list[i]),i + 1)
+        end
+    end)(init,1)
 end end end
+
+M.fold1 = function(fn) return function(list)
+    return M.fix2(function(loop,acc,i)
+        if list[i] == nil then
+            return acc
+        else
+            return loop(fn(acc,list[i]),i + 1)
+        end
+    end)(list[1],2)
+end end
 
 -- 関数合成
 local function compose(f1,f2)
@@ -86,7 +103,7 @@ end
 
 function M.curry(n) return function(fn)
     n = n or 2
-    local function loop(args,len,actual_len)
+    return M.fix2(function(loop,args,len,actual_len)
         if len >= n then
             return fn(unpack(args,1,actual_len))
         else
@@ -100,22 +117,20 @@ function M.curry(n) return function(fn)
                 return loop(_args,len + _len,actual_len + _actual_len)
             end
         end
-    end
-    return loop({},0,0)
+    end)({},0,0)
 end end
 
 M.uncurry = function(fn) return function(...)
     local args = {...}
     local len = select("#",...)
-    local function loop(fn,i)
+    return M.fix2(function(loop,fn,i)
         local retv = fn(args[i])
         if i >= len then
             return retv
         else
             return loop(retv,i + 1)
         end
-    end
-    return loop(fn,1)
+    end)(fn,1)
 end end
 
 M.range = function(list)
@@ -140,39 +155,36 @@ M.range = function(list)
         end
     end
     local new_list = {}
-    local function loop(i)
+    M.fix2(function(loop,i)
         if not_last(i) then
             table.insert(new_list,i)
             return loop(i + dist)
         end
-    end
-    loop(start)
+    end)(start)
     return new_list
 end
 
 M.replicate = function(n) return function(x)
     local new_list = {}
-    local function loop(i)
+    M.fix2(function(loop,i)
         if i >= 1 then
             table.insert(new_list,x)
             return loop(i - 1)
         end
-    end
-    loop(n)
+    end)(n)
     return new_list
 end end
 
 function M.chunks(size) return function(tbl)
     local t = {}
-    local function loop(i)
+    M.fix2(function(loop,i)
         if i <= #tbl then
             local sub_idx = math.ceil(i / size)
             t[sub_idx] = t[sub_idx] or {}
             table.insert(t[sub_idx],tbl[i])
             return loop(i + 1)
         end
-    end
-    loop(1)
+    end)(1)
     return t
 end end
 
@@ -199,7 +211,7 @@ M.remove = M.flip(M.insert)()
 M.flatten = function(depth) return function(list)
     depth = depth or 1
     local new_list = {}
-    local function flatten(depth,list)
+    M.fix2(function(flatten,depth,list)
         for _,v in pairs(list) do
             if (type(v) == "table") and (depth >= 1) then
                 flatten(depth - 1,v)
@@ -207,34 +219,31 @@ M.flatten = function(depth) return function(list)
                 table.insert(new_list,v)
             end
         end
-    end
-    flatten(depth,list)
+    end)(depth,list)
     return new_list
 end end
 
 M.reverse = function(list)
     local new_list = {}
-    local function loop(i)
+    M.fix2(function(loop,i)
         if i >= 1 then
             table.insert(new_list,list[i])
             return loop(i - 1)
         end
-    end
-    loop(#list)
+    end)(#list)
     return new_list
 end
 
 M.zip = function(list)
     local len = #list
     local new_list = {}
-    local function loop(i)
+    M.fix2(function(loop,i)
         local tuple = M.map(M.get(i))(list)
         if #tuple == len then
             table.insert(new_list,tuple)
             return loop(i + 1)
         end
-    end
-    loop(1)
+    end)(1)
     return new_list
 end
 

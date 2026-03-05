@@ -103,6 +103,75 @@ tbl.flip({fn})                                                    *tbl.flip()*
     返り値: ~
         (`function`) 引数を入れ換えた関数
 
+tbl.fix({fn})                                                      *tbl.fix()*
+    不動点コンビネータ
+
+    例: >lua
+        -- "hoge" を10回printする
+        tbl.fix(function(loop) return function(i)
+            if i > 0 then
+                print("hoge")
+                return loop(i - 1)
+            end
+        end end)(10)
+<
+
+    引数: ~
+      • {fn}   (`function`) 関数
+
+    返り値: ~
+        (`any`) {fn} の返り値
+
+tbl.fix2({fn})({...})                                             *tbl.fix2()*
+    不動点コンビネータのようなもの
+    `fix` を多変数関数で使えるようにしたもの
+    再帰処理に使う
+
+    例: >lua
+        -- "hoge" を10回printする
+        tbl.fix2(function(loop,i)
+            if i > 0 then
+                print("hoge")
+                return loop(i - 1)
+            end
+        end)(10)
+        -- 同等な表現
+        local function loop(i)
+            if i > 0 then
+                print("hoge")
+                return loop(i - 1)
+            end
+        end
+        loop(10)
+
+        -- フィボナッチ数
+        tbl.fix2(function(fib,n)
+            if n < 2 then
+                return n
+            else
+                return fib(n - 2) + fib(n - 1)
+            end
+        end)(10)
+        -- 55
+
+        -- 複数の値を渡す
+        tbl.fix2(function(fib,a,b,n)
+            if n == 0 then
+                return b
+            else
+                return fib(b,a + b,n - 1)
+            end
+        end)(1)(0)(60)
+        -- 1548008755920
+<
+
+    引数: ~
+      • {fn}   (`function`) 関数
+      • {...}  (`any`) {fn} に渡される引数
+
+    返り値: ~
+        (`any`) {fn} の返り値
+
 tbl.fold({fn})({init})({list})                                    *tbl.fold()*
     fold
 
@@ -125,7 +194,7 @@ tbl.fold1({fn})({list})                                          *tbl.fold1()*
     fold
 
     例: >lua
-    tbl.fold(function(x,y)
+    tbl.fold1(function(x,y)
         return x + y
     end)({ 1, 2, 3 })
     -- 6
