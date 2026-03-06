@@ -54,7 +54,7 @@ local function update_state(H,block)
 
     return tbl.map(function(t)
         return (t[1] + t[2]) % (2 ^ 32)
-    end)(tbl.zip({H,I}))
+    end)(tbl.transpose({H,I}))
 end
 
 local initial_H = { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 }

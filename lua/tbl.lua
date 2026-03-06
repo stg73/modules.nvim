@@ -177,8 +177,9 @@ end end
 
 function M.chunks(size) return function(tbl)
     local t = {}
+    local finish = #tbl
     M.fix2(function(loop,i)
-        if i <= #tbl then
+        if i <= finish then
             local sub_idx = math.ceil(i / size)
             t[sub_idx] = t[sub_idx] or {}
             table.insert(t[sub_idx],tbl[i])
@@ -234,7 +235,7 @@ M.reverse = function(list)
     return new_list
 end
 
-M.zip = function(list)
+M.transpose = function(list)
     local len = #list
     local new_list = {}
     M.fix2(function(loop,i)

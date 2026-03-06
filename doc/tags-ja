@@ -104,6 +104,6 @@ tbl.range()	modules.jax	/*tbl.range()*
 tbl.remove()	modules.jax	/*tbl.remove()*
 tbl.replicate()	modules.jax	/*tbl.replicate()*
 tbl.reverse()	modules.jax	/*tbl.reverse()*
+tbl.transpose()	modules.jax	/*tbl.transpose()*
 tbl.uncurry()	modules.jax	/*tbl.uncurry()*
-tbl.zip()	modules.jax	/*tbl.zip()*
 vim.keymap.get()	modules.jax	/*vim.keymap.get()*
