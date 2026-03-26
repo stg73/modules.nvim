@@ -43,7 +43,6 @@ function M.directory(d)
         end
 
         local pkg = (type(pkg) == "string") and { repo = pkg } or pkg
-        pkg.repo = not r.has("^.+://")(pkg.repo) and "https://github.com/" .. pkg.repo or pkg.repo -- URLスキームが無ければgithubを使う
         local name = (type(name) == "string") and name or vim.fs.basename(pkg.repo)
 
         if D.is_installed(pkg) then

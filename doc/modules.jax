@@ -1038,7 +1038,7 @@ install_table({pkgs})            *package_manager.directory().install_table()*
     例: >lua
         local p = package_manager.directory("/packages/directory")
         p.install_table({
-            { repo = "stg73/modules.nvim", branch = "main" },
+            { repo = "https://github.com/stg73/modules.nvim", branch = "main" },
             hoge = { repo = "https://example.com/hoge.git", tag = "v0.0.1" },
             fuga = "https://example.com/fuga.git",
         })
