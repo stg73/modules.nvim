@@ -1,6 +1,6 @@
 local M = {}
 
-function M.get_command(tbl)
+function M.get_cmd(tbl)
     return function(range)
         local substitute = require("regex").gsub(function(x) return tbl[x] end)(".")
         local current_lines = vim.api.nvim_buf_get_lines(0,range[1] - 1,range[2],false)
@@ -9,9 +9,9 @@ function M.get_command(tbl)
     end
 end
 
-function M.create_command(name) return function(tbl)
+function M.create_cmd(name) return function(tbl)
     vim.api.nvim_create_user_command(name,function(opts)
-        M.get_command(tbl)({ opts.line1, opts.line2 })
+        M.get_cmd(tbl)({ opts.line1, opts.line2 })
     end,{ range = true, bar = true })
 end end
 

@@ -5,7 +5,7 @@ local r = require("regex")
 local t = require("tbl")
 
 -- パッケージを管理するディレクトリを決める
-function M.directory(d)
+function M.dir(d)
     local dir = r.remove("/$")(d)
     local installed = dir .. "/_installed.json"
 

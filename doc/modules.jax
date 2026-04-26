@@ -649,17 +649,17 @@ character_table.Hiragana_Katakana          *character_table.Hiragana_Katakana*
     平仮名と片仮名
 
 ==============================================================================
-文字を置換するコマンドを作る                      *lua-lib-substitute_command*
+文字を置換するコマンドを作る                          *lua-lib-substitute_cmd*
 
-substitute_command.create_command({name})({tbl}) *substitute_command.create()*
+substitute_cmd.create_cmd({name})({tbl})         *substitute_cmd.create_cmd()*
     character_table を使って文字列を置換するユーザコマンドを作る
 
     例: >lua
-        local s = require("substitute_command")
+        local s = require("substitute_cmd")
         local c = require("character_table")
 
-        s.create_command("Katakana")(c.Hiragana_Katakana)
-        s.create_command("Hiragana")(tbl.pairs(vim.fn.reverse)(c.Hiragana_Katakana))
+        s.create_cmd"Katakana")(c.Hiragana_Katakana)
+        s.create_cmd"Hiragana")(tbl.pairs(vim.fn.reverse)(c.Hiragana_Katakana))
 <
     上では指定した範囲の平仮名を片仮名にするコマンド"Katakana"と
     片仮名を平仮名にするコマンド"Hiragana"を作っている
@@ -916,16 +916,16 @@ skk.hennkann.fn.buf_reverse({buf})({kouho})    *skk.hennkann.fn.buf_reverse()*
         (`string?`) 見出し
 
 ------------------------------------------------------------------------------
-SKK辞書を編集する                                                *skk.command*
+SKK辞書を編集する                                                    *skk.cmd*
 
 SKKを編集するためのコマンド
 `vim.api.nvim_create_user_command` の引数として与える関数を提供する
 
-skk.command.annotate({opts})                          *skk.command.annotate()*
+skk.cmd.annotate({opts})                                  *skk.cmd.annotate()*
     任意の範囲に分類注釈を追加するコマンド
 
     例: >lua
-        vim.api.nvim_create_user_command("SkkAnnotate",skk.command.annotate,{
+        vim.api.nvim_create_user_command("SkkAnnotate",skk.cmd.annotate,{
             bar = true,
             range = "%",
         })
@@ -958,7 +958,7 @@ lazy_call.lazy({opt})({callback})                           *lazy_call.lazy()*
                     • {keys}? (`[string|string[], string|string[]][]`)
                       |vim.keymap.set()| の {modes} と、 {lhs} のリスト、の組
                       のリスト
-                    • {command}? (`string`) そのコマンドを実行したとき
+                    • {cmd}? (`string`) そのコマンドを実行したとき
       • {callback}  (`function`) 呼び出す関数
 
 ==============================================================================
@@ -968,7 +968,7 @@ lazy_call.lazy({opt})({callback})                           *lazy_call.lazy()*
 使用例:
 https://github.com/stg73/config.nvim/blob/main/lua/packages.lua
 
-package_manager.directory({dir})                 *package_manager.directory()*
+package_manager.dir({dir})                             *package_manager.dir()*
     パッケージを管理するディレクトリを設定する
 
     引数: ~
@@ -977,13 +977,13 @@ package_manager.directory({dir})                 *package_manager.directory()*
     返り値: ~
         (`table`) 以下を含むテーブル
 
-load({name})                              *package_manager.directory().load()*
+load({name})                                    *package_manager.dir().load()*
     {name} のパッケージを ロードする
 
     引数: ~
       • {name}  (`string`) パッケージの名前
 
-load_opt({opt})({name})               *package_manager.directory().load_opt()*
+load_opt({opt})({name})                     *package_manager.dir().load_opt()*
     {name} のパッケージを {opt} のタイミングで ロードする
 
     引数: ~
@@ -995,12 +995,12 @@ load_opt({opt})({name})               *package_manager.directory().load_opt()*
                • {hook_post}) ロードされた後に実行される
       • {name}  (`string`) パッケージの名前
 
-load_table({opts})                 *package_manager.directory().load_table()*
+load_table({opts})                       *package_manager.dir().load_table()*
     `load_opt()` の {opts} を含むテーブルをとる
     テーブルのキーが `load_opt()` の {name} として使用される
 
     例: >lua
-        p = package_manager.directory("c:/users/user/package")
+        p = package_manager.dir("c:/users/user/package")
         p.load_table({
             ["vimdoc-ja"] = { event = "CmdLineEnter" },
             ["jumpcursor.vim"] = {
@@ -1018,25 +1018,25 @@ load_table({opts})                 *package_manager.directory().load_table()*
     引数: ~
       • {opts}  (`table`)
 
-loaded                                    *package_manager.directory().loaded*
+loaded                                          *package_manager.dir().loaded*
     読み込まれたプラグイン
 
-installed                              *package_manager.directory().installed*
+installed                                    *package_manager.dir().installed*
     インストールされているパッケージ
 
-install({name})({pkg})                 *package_manager.directory().install()*
+install({name})({pkg})                       *package_manager.dir().install()*
     {name} という名前で {pkg} をインストールする
     {name} が文字列でなれれば {pkg} から決定される
 
     引数: ~
       • {name}  (`string`) パッケージの名前
 
-install_table({pkgs})            *package_manager.directory().install_table()*
+install_table({pkgs})                  *package_manager.dir().install_table()*
     {pkg} を含むテーブルをとる
     テーブルのキーが `install()` の {name} として使用される
 
     例: >lua
-        local p = package_manager.directory("/packages/directory")
+        local p = package_manager.dir("/packages/directory")
         p.install_table({
             { repo = "https://github.com/stg73/modules.nvim", branch = "main" },
             hoge = { repo = "https://example.com/hoge.git", tag = "v0.0.1" },
@@ -1047,7 +1047,7 @@ install_table({pkgs})            *package_manager.directory().install_table()*
       • {pkgs}  (`table`) パッケージのテーブル
         キーが文字列の場合その名前でインストールする
 
-is_installed({pkg})               *package_manager.directory().is_installed()*
+is_installed({pkg})                     *package_manager.dir().is_installed()*
     {pkg} がインストールされているかを返す
 
     引数: ~
@@ -1056,13 +1056,13 @@ is_installed({pkg})               *package_manager.directory().is_installed()*
     返り値: ~
         (`boolean`)
 
-uninstall({name})                    *package_manager.directory().uninstall()*
+uninstall({name})                          *package_manager.dir().uninstall()*
     {name} のパッケージをアンインストールする
 
     引数: ~
       • {name} (`string`) パッケージの名前
 
-update({name})                          *package_manager.directory().update()*
+update({name})                                *package_manager.dir().update()*
     {name} のパッケージをアップデートする
 
     引数: ~
@@ -1289,7 +1289,7 @@ get_keymap.get({mode},{lhs},{opts})                         *get_keymap.get()*
             vim.keymap.get("n","gO").desc
             -- "vim.lsp.buf.document_symbol()"
 
-            vim.keymap.get("n","gO",{ buffer = 0 }).desc
+            vim.keymap.get("n","gO",{ buf = 0 }).desc
             -- "Show an Outline of the current buffer"
 <
 
@@ -1301,7 +1301,7 @@ get_keymap.get({mode},{lhs},{opts})                         *get_keymap.get()*
       • {opts}  (`table?`) オプションのテーブル
                 • {remap}? (`boolean`, 既定: `false`) 再帰的にキーマップを取得
                   主に |<Plug>| に使う
-                • {buffer}? (`integer`, 既定: `false`) 真なら
+                • {buf}? (`integer`, 既定: `false`) 真なら
                   バッファローカルなマッピングを取得する
                   参照: |nvim_buf_get_keymap()|
 

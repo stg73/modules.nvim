@@ -29,13 +29,13 @@ function M.lazy(opt) return function(callback)
             end
         end)(opt.keys)
     end
-    if opt.command then
-        vim.api.nvim_create_user_command(opt.command,function(opts)
-            vim.api.nvim_del_user_command(opt.command)
+    if opt.cmd then
+        vim.api.nvim_create_user_command(opt.cmd,function(opts)
+            vim.api.nvim_del_user_command(opt.cmd)
             callback()
-            local command_exists = vim.api.nvim_get_commands({})[opt.command]
-            if command_exists then
-                vim.cmd({ cmd = opt.command, args = opts.fargs })
+            local cmd_exists = vim.api.nvim_get_commands({})[opt.cmd]
+            if cmd_exists then
+                vim.cmd({ cmd = opt.cmd, args = opts.fargs })
             end
         end,{ nargs = "*", desc = opt.desc })
     end

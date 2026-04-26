@@ -23,8 +23,8 @@ local C = M.count
 M.hennkann = {}
 local H = M.hennkann
 
-M.command = {}
-local cmd = M.command
+M.cmd = {}
+local cmd = M.cmd
 
 
 local regex = require("regex")
