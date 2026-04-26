@@ -197,31 +197,28 @@ local function g()
 end
 
 function cmd.sort(opts) -- "skkdic-expr2"のラッパー
-    local current_search = vim.fn.getreg('/')
     if opts.range == 0 then -- 既定のrange
         vim.cmd([[$?;; okuri-ari entries.?;$!skkdic-expr2]]) -- ファイル上部のコメントを削除しない
     else
         vim.cmd(opts.line1 .. "," .. opts.line2 .. "!skkdic-expr2")
     end
-    vim.fn.setreg('/',current_search)
+    vim.fn.histdel("/",-1)
     vim.cmd.nohlsearch()
 end
 
 function cmd.annotate(opts)
     if vim.b.skk_bunnrui then
-        local current_search = vim.fn.getreg('/')
         local e = "/e" .. g()
         vim.cmd(opts.line1 .. ',' .. opts.line2 .. "global/\\v^(;; )@!/" .. [[substitute/\v(\/[^;]+)@<=\/@=/;]] .. e .. [[ | substitute/\v;@<=(\[]] .. vim.b.skk_bunnrui .. [[\])@!/\[]] .. vim.b.skk_bunnrui .. "\\]" .. e)
-        vim.fn.setreg('/',current_search)
+        vim.fn.histdel("/",-1)
         vim.cmd.nohlsearch()
     end
 end
 
 function cmd.count_annotation_errors(opts)
-    local current_search = vim.fn.getreg('/')
     cmd.search_annotation_errors()
     vim.cmd(opts.line1 .. "," .. opts.line2 .. [[substitute///ne]] .. g())
-    vim.fn.setreg('/',current_search)
+    vim.fn.histdel("/",-1)
     vim.cmd.nohlsearch()
 end
 
