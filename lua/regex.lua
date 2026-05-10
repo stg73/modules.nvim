@@ -93,9 +93,10 @@ function M.split(delimiter)
     return M.gmatch("[^" .. delimiter .. "]+")
 end
 
--- powershellのjoin-pathを一般化したようなもの
-function M.concat(delimiter) return function(str1) return function(str2)
-    return M.gsub(delimiter)("[^" .. delimiter .. "]@<=$")(str1) .. M.remove("^" .. delimiter)(str2)
+local tbl = require("tbl")
+function M.join(delimiter) return function(pat) return function(list)
+    local filterd = tbl.map(M.remove("^(" .. pat .. ")|(" .. pat .. ")$"))(list)
+    return table.concat(filterd,delimiter)
 end end end
 
 --[[
@@ -111,7 +112,7 @@ M.substituteと違い vim.fn.substituteが使われていない
 ]]
 function M.sub(sub) return function(pattern) return function(str)
     local t = {} -- strを分解・置換して格納する
-    require("tbl").fix2(function(loop,str)
+    tbl.fix2(function(loop,str)
         local s,e = M.find(pattern)(str)
         if s and e then
             local matchd = string.sub(str,s,e)

@@ -59,10 +59,8 @@ end
 
 local initial_H = { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 }
 
-function M.sha1(msg)
-    local bytes = { string.byte(msg,1,-1) }
-
-    -- パディング
+local add_padding = function(bytes)
+    local msg_bit_len = #bytes * 8
     table.insert(bytes,0x80)
     local non_zero_bytes = #bytes + 8
     local current_mod = non_zero_bytes % 64
@@ -70,8 +68,13 @@ function M.sha1(msg)
         local second_append = tbl.replicate(64 - current_mod)(0x00)
         vim.list_extend(bytes,second_append)
     end
-    local msg_bit_len = string.len(msg) * 8
     vim.list_extend(bytes,base.align(8)(base.to(2 ^ 8)(msg_bit_len)))
+end
+
+function M.sha1(msg)
+    local bytes = { string.byte(msg,1,-1) }
+
+    add_padding(bytes)
 
     local final_H = tbl.fold(update_state)(initial_H)(tbl.chunks(64)(bytes))
 
@@ -87,49 +90,12 @@ end
 function M.sha1_(msg)
     local bytes = { string.byte(msg,1,-1) }
 
-    -- パディング
-    table.insert(bytes,0x80)
-    local non_zero_bytes = #bytes + 8
-    local current_mod = non_zero_bytes % 64
-    if current_mod ~= 0 then
-        local second_append = tbl.replicate(64 - current_mod)(0x00)
-        vim.list_extend(bytes,second_append)
-    end
-    local msg_bit_len = string.len(msg) * 8
-    vim.list_extend(bytes,base.align(8)(base.to(2 ^ 8)(msg_bit_len)))
+    add_padding(bytes)
 
-    local H = { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 }
+    local H = initial_H
 
     local function update_state(block)
         local A, B, C, D, E = unpack(H)
-
-        local function S(n,x)
-            return bit.bor(bit.lshift(x,n),bit.rshift(x,32 - n))
-        end
-
-        local function f(t,B,C,D)
-            if t <= 20 then
-                return bit.bor(bit.band(B,C),bit.band(bit.bnot(B),D))
-            elseif t <= 40 then
-                return bit.bxor(B,C,D)
-            elseif t <= 60 then
-                return bit.bor(bit.band(B,C),bit.band(B,D),bit.band(C,D))
-            elseif t <= 80 then
-                return bit.bxor(B,C,D)
-            end
-        end
-
-        local function K(t)
-            if t <= 20 then
-                return 0x5A827999
-            elseif t <= 40 then
-                return 0x6ED9EBA1
-            elseif t <= 60 then
-                return 0x8F1BBCDC
-            elseif t <= 80 then
-                return 0xCA62C1D6
-            end
-        end
 
         local W = {}
         tbl.map(function(list)

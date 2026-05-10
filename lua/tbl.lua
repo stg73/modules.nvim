@@ -134,13 +134,8 @@ M.uncurry = function(fn) return function(...)
 end end
 
 M.range = function(list)
-    local start = list[1]
-    local dist,finish
-    if list[3] then
-        finish = list[3]
-        dist = list[2] - start
-    else
-        finish = list[2]
+    local start,finish,dist = unpack(list)
+    if dist == nil then
         if start <= finish then
             dist = 1
         else
@@ -155,10 +150,10 @@ M.range = function(list)
         end
     end
     local new_list = {}
-    M.fix2(function(loop,i)
-        if not_last(i) then
-            table.insert(new_list,i)
-            return loop(i + dist)
+    M.fix2(function(loop,num)
+        if not_last(num) then
+            table.insert(new_list,num)
+            return loop(num + dist)
         end
     end)(start)
     return new_list
@@ -168,7 +163,7 @@ M.replicate = function(n) return function(x)
     local new_list = {}
     M.fix2(function(loop,i)
         if i >= 1 then
-            table.insert(new_list,x)
+            new_list[i] = x
             return loop(i - 1)
         end
     end)(n)
@@ -241,7 +236,7 @@ M.transpose = function(list)
     M.fix2(function(loop,i)
         local tuple = M.map(M.get(i))(list)
         if #tuple == len then
-            table.insert(new_list,tuple)
+            new_list[i] = tuple
             return loop(i + 1)
         end
     end)(1)
